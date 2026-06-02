@@ -14,6 +14,7 @@ from app.services.commit_file_ingestion import CommitFileIngestion
 from app.router.repository_summary import router as summary_router
 from app.router.contributor_analytics import router as contributor_router
 from app.router.file_analytics import router as hotspot_router
+from app.router.repository_activity_analytics_router import router as repo_activity_router
 
 app = FastAPI(
     title="EMOS",
@@ -81,3 +82,4 @@ def commit_file_ingest():
 app.include_router(summary_router)
 app.include_router(contributor_router)
 app.include_router(hotspot_router)
+app.include_router(repo_activity_router)
