@@ -15,6 +15,7 @@ from app.router.repository_summary import router as summary_router
 from app.router.contributor_analytics import router as contributor_router
 from app.router.file_analytics import router as hotspot_router
 from app.router.repository_activity_analytics_router import router as repo_activity_router
+from app.router.file_ownership_analytics import router as file_ownership_router
 
 app = FastAPI(
     title="EMOS",
@@ -83,3 +84,4 @@ app.include_router(summary_router)
 app.include_router(contributor_router)
 app.include_router(hotspot_router)
 app.include_router(repo_activity_router)
+app.include_router(file_ownership_router)
