@@ -6,3 +6,4 @@ from app.models.commitFile import CommitFile
 from app.models.file import File
 from app.models.pull_request import PullRequest
 from app.models.contributor import Contributor
+from app.models.codeFile import CodeFile
