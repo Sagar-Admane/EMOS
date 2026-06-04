@@ -10,6 +10,7 @@ from app.services.branch_ingestion_service import BranchIngestionService
 from app.services.contributor_ingestion_service import ContributorIngestionService
 from app.services.file_ingestion_service import FileIngestionService
 from app.services.commit_file_ingestion import CommitFileIngestion
+from app.services.qdrant_service import QdrantService
 
 from app.router.repository_summary import router as summary_router
 from app.router.contributor_analytics import router as contributor_router
@@ -89,3 +90,15 @@ app.include_router(repo_activity_router)
 app.include_router(file_ownership_router)
 app.include_router(code_file_ingest_router)
 app.include_router(code_chunk_router)
+
+@app.get("/qdrant/init")
+
+def init_qdrant():
+
+    service = QdrantService()
+
+    service.create_collection()
+
+    return {
+        "message": "collection_recieved"
+    }
