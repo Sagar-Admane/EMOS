@@ -1,7 +1,8 @@
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     VectorParams,
-    Distance
+    Distance,
+    PointStruct
 )
 
 class QdrantService:
@@ -17,7 +18,19 @@ class QdrantService:
         self.client.recreate_collection(
             collection_name="code_chunks",
             vectors_config=VectorParams(
-                size=768,
+                size=384,
                 distance=Distance.COSINE
             )
+        )
+
+    def upsert_chunk(self, chunk_id: int, vector: list, payload: dict):
+        self.client.upsert(
+            collection_name="code_chunks",
+            points = [
+                PointStruct(
+                    id=chunk_id,
+                    vector=vector,
+                    payload=payload
+                )
+            ]
         )

@@ -11,6 +11,7 @@ from app.services.contributor_ingestion_service import ContributorIngestionServi
 from app.services.file_ingestion_service import FileIngestionService
 from app.services.commit_file_ingestion import CommitFileIngestion
 from app.services.qdrant_service import QdrantService
+from app.services.embedding_service import EmbeddingService
 
 from app.router.repository_summary import router as summary_router
 from app.router.contributor_analytics import router as contributor_router
@@ -19,6 +20,7 @@ from app.router.repository_activity_analytics_router import router as repo_activ
 from app.router.file_ownership_analytics import router as file_ownership_router
 from app.router.code_file_ingest_router import router as code_file_ingest_router
 from app.router.code_chunk_router import router as code_chunk_router
+from app.router.generate_embedding_router import router as generate_embedding_router
 
 app = FastAPI(
     title="EMOS",
@@ -90,6 +92,7 @@ app.include_router(repo_activity_router)
 app.include_router(file_ownership_router)
 app.include_router(code_file_ingest_router)
 app.include_router(code_chunk_router)
+app.include_router(generate_embedding_router)
 
 @app.get("/qdrant/init")
 
