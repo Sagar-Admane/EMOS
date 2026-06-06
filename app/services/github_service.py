@@ -7,7 +7,7 @@ class GithubService:
     def get_repository(self, repo_name: str):
         return self.client.get_repo(repo_name)
     
-    def get_commit(self, repo_name: str):
+    def get_commits(self, repo_name: str):
         repo = self.client.get_repo(repo_name)
         return repo.get_commits()
     
