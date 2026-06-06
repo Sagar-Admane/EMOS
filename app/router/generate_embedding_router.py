@@ -11,4 +11,3 @@ def generate_embedding():
     response = embedding_service.generate_embedding(db)
 
     return response
-
