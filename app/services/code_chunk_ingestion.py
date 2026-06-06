@@ -36,7 +36,7 @@ class CodeChunkIngestion:
 
                 total_chunks+=1
 
-            return {
-                "code_file_processed": len(code_files),
-                "chunks_created": total_chunks
-            }
+        return {
+            "code_file_processed": len(code_files),
+            "chunks_created": total_chunks
+        }
