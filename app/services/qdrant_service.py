@@ -34,3 +34,13 @@ class QdrantService:
                 )
             ]
         )
+
+    def search(self, vector: list, limit=5):
+        results = self.client.query_points(
+            collection_name="code_chunks",
+            query=vector,
+            limit=limit,
+            with_vectors=True
+        ).points
+        
+        return results
