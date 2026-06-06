@@ -20,7 +20,7 @@ class CommitIngestionService:
     ):
         commits = (
             self.github_service
-            .get_commit(repo_name)
+            .get_commits(repo_name)
         )
 
         count = 0
