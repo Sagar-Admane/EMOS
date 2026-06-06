@@ -21,6 +21,7 @@ from app.router.file_ownership_analytics import router as file_ownership_router
 from app.router.code_file_ingest_router import router as code_file_ingest_router
 from app.router.code_chunk_router import router as code_chunk_router
 from app.router.generate_embedding_router import router as generate_embedding_router
+from app.router.semantic_search_router import router as sementic_search_router
 
 app = FastAPI(
     title="EMOS",
@@ -34,17 +35,17 @@ def root():
 
     token = settings.github_token
     github_service = GithubService(token)
-    # commit_service = CommitIngestionService(github_service)
-    # count = commit_service.ingest_commits(db, "fastapi/fastapi", 1, 20)
+    commit_service = CommitIngestionService(github_service)
+    # count = commit_service.ingest_commits(db, "sagar-admane/StockSync", 4, 9)
     # service = RepositoryIngestion(github_service)
-    # repo = service.ingest_repository(db, "fastapi/fastapi")
+    # repo = service.ingest_repository(db, "sagar-admane/StockSync")
 
     # print(repo.id)
     # print(repo.full_name)
 
     service = PullRequestIngestionService(github_service)
 
-    count = service.ingest_pull_requests(db, "fastapi/fastapi", 1, 50)
+    count = service.ingest_pull_requests(db, "sagar-admane/StockSync", 1, 50)
 
     return {
         "prs_ingested": count
@@ -55,7 +56,7 @@ def branch_ingest():
     token = settings.github_token
     github_service = GithubService(token)
     service = BranchIngestionService(github_service)
-    count = service.ingest_branches(db, "fastapi/fastapi", 1)
+    count = service.ingest_branches(db, "sagar-admane/StockSync", 4)
     return {
         "branches": count
     }
@@ -65,7 +66,7 @@ def contributor_ingest():
     token = settings.github_token
     github_service = GithubService(token)
     service = ContributorIngestionService(github_service)
-    count = service.contributor_ingestion(db, "fastapi/fastapi", 1)
+    count = service.contributor_ingestion(db, "sagar-admane/StockSync", 4)
     return count
 
 @app.get("/ingest-file")
@@ -73,7 +74,7 @@ def file_ingest():
     token = settings.github_token
     github_service = GithubService(token)
     service = FileIngestionService(github_service)
-    count = service.file_ingestion(db, "fastapi/fastapi", 1)
+    count = service.file_ingestion(db, "sagar-admane/StockSync", 4)
     return count
 
 @app.get("/ingest-commitFile")
@@ -81,7 +82,7 @@ def commit_file_ingest():
     token = settings.github_token
     github_service = GithubService(token)
     service = CommitFileIngestion(github_service)
-    relations = service.commit_file_ingestion(db, "fastapi/fastapi", 1)
+    relations = service.commit_file_ingestion(db, "sagar-admane/StockSync", 4)
     return relations
 
 
@@ -93,6 +94,7 @@ app.include_router(file_ownership_router)
 app.include_router(code_file_ingest_router)
 app.include_router(code_chunk_router)
 app.include_router(generate_embedding_router)
+app.include_router(sementic_search_router)
 
 @app.get("/qdrant/init")
 
