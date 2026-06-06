@@ -8,3 +8,4 @@ from app.models.pull_request import PullRequest
 from app.models.contributor import Contributor
 from app.models.codeFile import CodeFile
 from app.models.code_chunk import CodeChunk
+from app.models.file_contents import FileContent
