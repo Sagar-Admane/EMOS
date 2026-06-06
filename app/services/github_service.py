@@ -1,4 +1,5 @@
 from github import Github
+from app.utils.text_extension import TEXT_EXTENSIONS
 
 class GithubService:
     def __init__(self, token: str):
@@ -35,6 +36,8 @@ class GithubService:
     def get_file_content(self, repo_name: str, path: str):
         repo = self.client.get_repo(repo_name)
 
+        if(path not in TEXT_EXTENSIONS):
+            return None
         content = repo.get_contents(path)
 
         return content.decoded_content.decode("utf-8")

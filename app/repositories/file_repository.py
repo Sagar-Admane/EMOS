@@ -17,3 +17,9 @@ class FileRepository:
         db.add(file)
 
         return file
+    
+    @staticmethod
+    def get_by_repo_id(db: Session,repo_id: int):
+        
+        return db.query(File).filter(File.repo_id == repo_id).all()
+        
