@@ -38,4 +38,3 @@ class GithubService:
         content = repo.get_contents(path)
 
         return content.decoded_content.decode("utf-8")
-        
