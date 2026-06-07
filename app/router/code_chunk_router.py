@@ -16,3 +16,16 @@ def ingest():
     response = service.ingest(db, 20, 100)
 
     return response
+
+@router.get("/chunk-update-all")
+def update_all():
+    db = SessionLocal()
+
+    token = settings.github_token
+    github_service = GithubService(token)
+
+    service = CodeChunkIngestion(github_service)
+
+    response = service.update_all(db)
+
+    return response
