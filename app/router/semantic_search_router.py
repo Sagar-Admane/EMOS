@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request
 from app.services.talk_to_llm import TalkToLLM
+from fastapi.responses import PlainTextResponse
 
 router = APIRouter()
 
@@ -9,8 +10,9 @@ async def search(request: Request):
 
     try:
         text = body.get("query")
-        prompt = TalkToLLM.chat(text)
+        talk_to_llm_service = TalkToLLM()
+        response = talk_to_llm_service.chat(text)
 
-        return prompt 
+        return PlainTextResponse(response) 
     except Exception as exec:
         print(exec)

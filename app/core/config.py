@@ -15,4 +15,6 @@ class Settings(BaseSettings):
 
     github_token: str = Field(validation_alias="GITHUB_TOKEN")
 
+    api_key: str = Field(validation_alias="GEMINI_API_KEY")
+
 settings = Settings()
