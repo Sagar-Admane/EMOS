@@ -24,7 +24,8 @@ class EmbeddingIngestionService:
                     "chunk_id": chunk.id,
                     "code_file_id": chunk.code_file_id,
                     "start_line": chunk.start_line,
-                    "end_line": chunk.end_line
+                    "end_line": chunk.end_line,
+                    "file_path": chunk
                 }
             )
 

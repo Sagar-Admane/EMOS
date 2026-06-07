@@ -11,7 +11,9 @@ async def search(request: Request):
         text = body.get("query")
         semantic_search = SemanticSearchService()
 
-        semantic_search.search(text)
+        results = semantic_search.search(text)
+
+        return results
 
     except Exception as exec:
         print(exec)

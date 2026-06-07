@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.code_chunk import CodeChunk
+from app.models.file import File
+from app.models.codeFile import CodeFile
 
 class CodeChunkRepository:
     @staticmethod
@@ -29,3 +31,27 @@ class CodeChunkRepository:
     def update_all(db: Session, chunks):
         db.bulk_save_objects(chunks)
         db.commit()
+
+    @staticmethod
+    def get_chunk_with_file(
+        db: Session,
+        chunk_id: int
+    ):
+        return (
+            db.query(
+                CodeChunk,
+                File.path.label("path")
+            )
+            .join(
+                CodeFile,
+                CodeChunk.code_file_id == CodeFile.id
+            )
+            .join(
+                File,
+                CodeFile.file_id == File.id
+            )
+            .filter(
+                CodeChunk.id == chunk_id
+            )
+            .first()
+        )
