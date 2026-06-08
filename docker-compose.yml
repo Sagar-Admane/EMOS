@@ -16,5 +16,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
 
+  neo4j:
+    image: neo4j:5
+    container_name: emos_neo4j
+    restart: always
+    ports:
+      - "7474:7474"   # Browser UI
+      - "7687:7687"   # Bolt protocol
+    environment:
+      NEO4J_AUTH: neo4j/password123
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+
 volumes:
   postgres_data:
+  neo4j_data:
+  neo4j_logs:

@@ -17,4 +17,8 @@ class Settings(BaseSettings):
 
     api_key: str = Field(validation_alias="GEMINI_API_KEY")
 
+    neo4j_uri: str = Field(validation_alias="NEO4J_URI")
+    neo4j_username: str = Field(validation_alias="NEO4J_USERNAME")
+    neo4j_password: str = Field(validation_alias="NEO4J_PASSWORD")
+
 settings = Settings()
