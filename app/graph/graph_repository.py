@@ -44,7 +44,7 @@ f.extension = $extension
         query = """
 MATCH(r:Repository {repo_id: $repo_id})
 MATCH(f:File {file_id: $file_id})
-CREATE (r)-[:CONTAINS]->(f)
+MERGE (r)-[:CONTAINS]->(f)
 """
         
         self.neo4j.execute_query(
@@ -80,7 +80,7 @@ github_user_id: $github_user_id
 MATCH(f:File {
 file_id: $file_id
 })
-CREATE (e)-[:MODIFIED]->(f)
+MERGE (e)-[:MODIFIED]->(f)
 """
 
         self.neo4j.execute_query(
@@ -88,5 +88,36 @@ CREATE (e)-[:MODIFIED]->(f)
             {
                 "github_user_id": github_user_id,
                 "file_id": file_id
+            }
+        )
+    
+    def create_function_node(self, file_id: int, function_name: str):
+        query = """
+MERGE(f:Function {
+function_name: $function_name,
+file_id: $file_id
+})
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "file_id": file_id,
+                "function_name": function_name
+            }
+        )
+
+    def file_to_function_relation(self, file_id: int, function_name: str):
+        query = """
+MATCH(f:File {file_id: $file_id})
+MATCH(fun:Function {function_name: $function_name})
+MERGE (f)-[:CONTAINS]->(fun)
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "file_id": file_id,
+                "function_name": function_name
             }
         )
