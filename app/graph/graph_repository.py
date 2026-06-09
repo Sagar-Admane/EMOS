@@ -77,7 +77,7 @@ SET e.username= $username)
 MATCH(e:Engineer {
 github_user_id: $github_user_id
 })
-MATCH(f:Fil {
+MATCH(f:File {
 file_id: $file_id
 })
 CREATE (e)-[:MODIFIED]->(f)
