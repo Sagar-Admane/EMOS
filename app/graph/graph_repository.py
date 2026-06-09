@@ -54,3 +54,39 @@ CREATE (r)-[:CONTAINS]->(f)
                 "file_id": file_id
             }
         )
+
+    def create_engineer_nodes(self, github_user_id: str, username: str):
+
+        query = """
+MERGE(e:Engineer {
+github_user_id: $github_user_id
+},
+SET e.username= $username)
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "github_user_id": github_user_id,
+                "username": username
+            }
+        )
+    
+    def create_modified_relations(self, github_user_id, file_id):
+        query = """
+MATCH(e:Engineer {
+github_user_id: $github_user_id
+})
+MATCH(f:Fil {
+file_id: $file_id
+})
+CREATE (e)-[:MODIFIED]->(f)
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "github_user_id": github_user_id,
+                "file_id": file_id
+            }
+        )
