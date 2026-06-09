@@ -99,20 +99,26 @@ file_id: $file_id
 })
 """
 
-        self.neo4j.execute_query(
-            query,
-            {
-                "file_id": file_id,
-                "function_name": function_name
-            }
-        )
+        try:
+            result = self.neo4j.execute_query(
+                query,
+                {
+                    "file_id": file_id,
+                    "function_name": function_name
+                }
+            )
+
+            print("Result of creating a node is : ",result)
+        except Exception as exc:
+            print(exc)
+
 
     def file_to_function_relation(self, file_id: int, function_name: str):
         query = """
 MATCH(f:File {file_id: $file_id})
-MATCH(fun:Function {function_name: $function_name})
+MATCH(fun:Function {function_name: $function_name, file_id: $file_id})
 MERGE (f)-[:CONTAINS]->(fun)
-"""
+""" 
 
         self.neo4j.execute_query(
             query,
