@@ -127,3 +127,44 @@ MERGE (f)-[:CONTAINS]->(fun)
                 "function_name": function_name
             }
         )
+
+    def create_function_call_relation(self, caller_name: str, callee_name: str, file_id : int):
+        query = """
+MATCH(caller:Function {
+function_name: $caller_name,
+file_id: $file_id
+})
+MATCH(callee:Function {
+function_name: $callee_name,
+file_id: $file_id
+})
+MERGE(caller)-[:CALLS]->(callee)
+"""
+        self.neo4j.execute_query(
+            query,
+            {
+                "file_id": file_id,
+                "caller_name": caller_name,
+                "callee_name": callee_name
+            }
+        )
+
+    def create_file_import_relationship(self, source_file_id: str, dest_file_id: str):
+
+        print("Source file id: ",source_file_id)
+        print("Dest file id",dest_file_id)
+        query= """
+MATCH(f1:File {file_id: $source_file_id})
+MATCH(f2:File {file_id: $dest_file_id})
+MERGE(f1)-[:IMPORTS]->(f2)
+        """
+        try:
+            self.neo4j.execute_query(
+                query,
+                {
+                    "source_file_id": source_file_id,
+                    "dest_file_id": dest_file_id
+                }
+            )
+        except Exception as exc:
+            print("Exception occured: ",exc)
