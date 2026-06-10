@@ -52,3 +52,16 @@ class ImportGraphIngestionServive:
                 dest_file_id=imported_path.id
             )
 
+
+
+from app.db.session import SessionLocal
+service = ImportGraphIngestionServive()
+db = SessionLocal()
+
+from app.models.file import File
+
+files = db.query(File).all()
+
+for file in files:
+    service.ingest_imports(db, file.id)
+    
