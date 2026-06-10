@@ -216,7 +216,7 @@ MERGE (d:Database {database_name: $database_name})
         query = """
 MATCH(d:Database {database_name: $database_name})
 MATCH(f:File {file_id: $file_id})
-MERGE (d)-[:USES_DATABASE]->(f)
+MERGE (f)-[:USES_DATABASE]->(d)
 """
         self.neo4j.execute_query(
             query,
