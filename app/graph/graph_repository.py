@@ -149,6 +149,8 @@ MERGE(caller)-[:CALLS]->(callee)
             }
         )
 
+        print("Caller is calling the function and is saved in neo4j")
+
     def create_file_import_relationship(self, source_file_id: str, dest_file_id: str):
 
         print("Source file id: ",source_file_id)
@@ -168,3 +170,36 @@ MERGE(f1)-[:IMPORTS]->(f2)
             )
         except Exception as exc:
             print("Exception occured: ",exc)
+
+    def create_owns_relation(self, file_id: int, github_user_id: int):
+        try:
+            
+            query = """
+MATCH(e:Engineer {github_user_id: $github_user_id})
+MATCH(f:File {file_id:$file_id})
+MERGE (e)-[:OWNS]->(f)
+"""
+            print(type(github_user_id))
+            print(type(file_id))
+
+            print(github_user_id)
+            print(file_id)
+            
+
+            result = self.neo4j.execute_query(
+                query,
+                {
+                    "github_user_id": github_user_id,
+                    "file_id": file_id
+                }
+            )
+
+            print("OWNS CREATED", result)
+        except Exception as e:
+            print("ERROR:", e)
+
+
+    def database_nodes(self):
+        pass
+
+    

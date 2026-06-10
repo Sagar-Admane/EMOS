@@ -15,7 +15,12 @@ class CallGraphIngestionService:
             return
 
 
-        calls = CallExtractor.extract_calls(codefile.content)
+        calls = CallExtractor.extract_calls(codefile.content, codefile.language)
+        
+        if not calls:
+            return
+
+        print("The calls are : ",calls)
 
         for caller, callees in calls.items():
 
@@ -24,6 +29,11 @@ class CallGraphIngestionService:
 
 from app.db.session import SessionLocal
 
+from app.models.file import File
+
 service = CallGraphIngestionService()
 db = SessionLocal()
-service.ingest_file(db, 3055)
+files = db.query(File).all()
+for file in files:
+    service.ingest_file(db, file.id)
+    

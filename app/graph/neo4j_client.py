@@ -13,13 +13,16 @@ class Neo4JClient:
         )
 
     def execute_query(self, query: str, parameters: dict | None = None):
-        with self.driver.session() as session:
-            result = session.run(
-                query,
-                parameters or {}
-            )
+        try:
+            with self.driver.session() as session:
+                result = session.run(
+                    query,
+                    parameters or {}
+                )
 
-            return list(result)
+                return list(result)
+        except Exception as exe:
+            return list(exe)
         
     def close(self):
         self.driver.close()

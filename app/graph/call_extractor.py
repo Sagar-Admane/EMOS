@@ -1,5 +1,5 @@
 import ast
-
+import re
 
 class FunctionCallVisitor(ast.NodeVisitor):
 
@@ -17,42 +17,81 @@ class FunctionCallVisitor(ast.NodeVisitor):
 class CallExtractor:
 
     @staticmethod
-    def extract_calls(content: str) -> dict[str, list[str]]:
+    def extract_calls(content: str, language: str):
 
-        try:
-            tree = ast.parse(content)
+        if language == "py":
+            try:
+                tree = ast.parse(content)
 
-        except SyntaxError:
-            return {}
+            except SyntaxError:
+                return {}
 
-        function_calls = {}
+            function_calls = {}
 
-        for node in tree.body:
+            for node in tree.body:
 
-            if not isinstance(node, ast.FunctionDef):
-                continue
+                if not isinstance(node, ast.FunctionDef):
+                    continue
 
-            function_name = node.name
+                function_name = node.name
 
-            visitor = FunctionCallVisitor()
+                visitor = FunctionCallVisitor()
 
-            visitor.visit(node)
+                visitor.visit(node)
 
-            function_calls[function_name] = visitor.calls
+                function_calls[function_name] = visitor.calls
 
-        return function_calls
+            return function_calls
+        
+        if language in ["js", "ts", "jsx", "tsx"]:
+            return CallExtractor.extract_function_Calls_from_js_ts(content)
+        
+    def extract_function_Calls_from_js_ts(content: str):
+
+        function_pattern = (
+            r'function\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\([^)]*\)\s*\{([\s\S]*?)\}'
+        )
+
+        functions = re.findall(
+            function_pattern,
+            content
+        )
+
+        result = {}
+
+        for function_name, body in functions:
+
+            calls = re.findall(
+                r'([a-zA-Z_][a-zA-Z0-9_]*)\s*\(',
+                body
+            )
+
+            ignored = {
+                "if",
+                "for",
+                "while",
+                "switch",
+                "catch"
+            }
+
+            result[function_name] = [
+                call
+                for call in calls
+                if call not in ignored
+            ]
+
+        return result
     
-content = """
-def login():
-    verify_token()
-    create_session()
+# content = """
+# def login():
+#     verify_token()
+#     create_session()
 
-def verify_token():
-    pass
+# def verify_token():
+#     pass
 
-def create_session():
-    pass
-"""
+# def create_session():
+#     pass
+# """
 
-
-print(CallExtractor.extract_calls(content))
+# print(CallExtractor.extract_calls(content))

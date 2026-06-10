@@ -25,6 +25,7 @@ class GraphEngineerIngestionService:
 
                 for commit_file in commit_files:
                     self.graph_repository.create_modified_relations(contributor.github_user_id, commit_file.file_id)
+                    self.graph_repository.create_owns_relation(commit_file.file_id, contributor.github_user_id)
 
 from app.db.session import SessionLocal
 
