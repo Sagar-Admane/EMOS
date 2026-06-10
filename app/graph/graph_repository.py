@@ -284,3 +284,30 @@ MERGE (f)-[:CONTAINS]->(c)
                 "file_id": file_id
             }
         )
+
+    def create_service_node(self, service_name:str):
+        query = """
+MERGE (s:Service {service_name: $service_name})
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "service_name": service_name
+            }
+        )
+
+    
+    def create_service_file_relation(self, service_name: str, file_id: int):
+        query = """
+MATCH (s:Service {service_name: $service_name})
+MATCH (f:File {file_id: $file_id})
+MERGE (s)-[:CONTAINS]->(f)
+"""
+        self.neo4j.execute_query(
+            query,
+            {
+                "service_name": service_name,
+                "file_id": file_id
+            }
+        )
