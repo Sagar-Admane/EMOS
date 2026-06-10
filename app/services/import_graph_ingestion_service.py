@@ -52,9 +52,3 @@ class ImportGraphIngestionServive:
                 dest_file_id=imported_path.id
             )
 
-
-from app.db.session import SessionLocal
-service = ImportGraphIngestionServive()
-db = SessionLocal()
-
-service.ingest_imports(db, 3057)
