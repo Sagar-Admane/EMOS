@@ -225,3 +225,34 @@ MERGE (f)-[:USES_DATABASE]->(d)
                 "database_name": database_name
             }
         )
+
+    def create_api_node(self, path:str, method: str):
+        query = """
+MERGE(a:API {path: $path, method: $method})
+"""
+
+        self.neo4j.execute_query(query,{
+            "path": path,
+            "method": method
+        })
+
+    def create_api_funtion_relation(self, path: str, method: str, file_id: int, file_path: str):
+        query = """
+MATCH(a:API {path: $path, method: $method})
+MATCH(f:File {file_id: $file_id, path: $file_path})
+MERGE (a)-[:HANDLED_BY]->(f)
+"""
+
+        print("Before executing node")
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "path": path,
+                "method": method,
+                "file_id": file_id,
+                "file_path": file_path
+            }
+        )
+
+        print("After executing relation", file_id, file_path)
