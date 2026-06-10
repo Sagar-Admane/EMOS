@@ -60,8 +60,8 @@ MERGE (r)-[:CONTAINS]->(f)
         query = """
 MERGE(e:Engineer {
 github_user_id: $github_user_id
-},
-SET e.username= $username)
+})
+SET e.username= $username
 """
 
         self.neo4j.execute_query(
