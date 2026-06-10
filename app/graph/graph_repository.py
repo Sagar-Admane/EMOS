@@ -199,7 +199,29 @@ MERGE (e)-[:OWNS]->(f)
             print("ERROR:", e)
 
 
-    def database_nodes(self):
-        pass
+    def create_database_node(self, database_name: str):
 
-    
+        query = """
+MERGE (d:Database {database_name: $database_name})
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "database_name": database_name
+            }
+        )
+
+    def create_file_database_relation(self, file_id: int, database_name: str):
+        query = """
+MATCH(d:Database {database_name: $database_name})
+MATCH(f:File {file_id: $file_id})
+MERGE (d)-[:USES_DATABASE]->(f)
+"""
+        self.neo4j.execute_query(
+            query,
+            {
+                "file_id": file_id,
+                "database_name": database_name
+            }
+        )
