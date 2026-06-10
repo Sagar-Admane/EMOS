@@ -31,4 +31,4 @@ from app.db.session import SessionLocal
 service = GraphEngineerIngestionService()
 db = SessionLocal()
 
-service.engineer_ingest(db, 4)  
+service.engineer_ingest(db, 4)
