@@ -256,3 +256,31 @@ MERGE (a)-[:HANDLED_BY]->(f)
         )
 
         print("After executing relation", file_id, file_path)
+
+    
+    def create_class_node(self, class_name: str, file_id: int):
+        query = """
+MERGE(c:Class {class_name: $class_name, file_id: $file_id})
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "class_name": class_name,
+                "file_id": file_id
+            }
+        )
+
+    def file_class_relation(self, class_name: str, file_id: int):
+        query = """
+MATCH(f:File {file_id: $file_id})
+MATCH(c:Class {class_name: $class_name, file_id: $file_id})
+MERGE (f)-[:CONTAINS]->(c)
+"""
+        self.neo4j.execute_query(
+            query,
+            {
+                "class_name": class_name,
+                "file_id": file_id
+            }
+        )
