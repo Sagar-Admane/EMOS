@@ -6,7 +6,7 @@ class ImportExtractor:
     def extract_imports(contents: str, language: str):
         if language == "py":
             return ImportExtractor.extract_python_imports(contents)
-        if language in  ["js", "ts"]:
+        if language in  ["js", "ts", "jsx", "tsx"]:
             return ImportExtractor.extract_js_ts_imports(contents)
         
     def extract_python_imports(content: str):
