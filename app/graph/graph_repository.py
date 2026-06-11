@@ -347,3 +347,17 @@ MERGE(e)-[:CREATED]->(p)
                 "username": username
             }
         )
+
+    def create_engineer_pr_reviews_relation(self, pr_id: int, username:str):
+        query = """
+MATCH(e:Engineer {username: $username})
+MATCH(p:PullRequest {pr_id: $pr_id})
+MERGE (e)-[:REVIEWS]->(p)
+"""
+        self.neo4j.execute_query(
+            query,
+            {
+                "username": username,
+                "pr_id": pr_id
+            }
+        )
