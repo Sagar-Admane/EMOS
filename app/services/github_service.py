@@ -41,3 +41,8 @@ class GithubService:
         content = repo.get_contents(path)
 
         return content.decoded_content.decode("utf-8")
+    
+    def get_pr_reviews(self, repo_id: int, pull_number: int):
+        repo = self.client.get_repo(repo_id)
+        prs = repo.get_pull(pull_number)
+        return prs.get_reviews()
