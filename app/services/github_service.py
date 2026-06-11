@@ -46,3 +46,8 @@ class GithubService:
         repo = self.client.get_repo(repo_id)
         prs = repo.get_pull(pull_number)
         return prs.get_reviews()
+    
+    def get_user(self, user_name: str):
+        user = self.client.get_user(user_name)
+
+        return user

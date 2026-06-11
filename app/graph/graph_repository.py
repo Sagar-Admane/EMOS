@@ -311,3 +311,39 @@ MERGE (s)-[:CONTAINS]->(f)
                 "file_id": file_id
             }
         )
+    
+    def create_pr_node(self, title: str, pr_id: int, number: int, state: str):
+        query = """
+MERGE(p:PullRequest {
+pr_id: $pr_id
+})
+SET p.title = $title,
+p.number = $number,
+p.state = $state
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "title":title,
+                "pr_id": pr_id,
+                "number": number,
+                "state": state
+            }
+        )
+
+    
+    def create_engineer_pr_relation(self, pr_id: int, username: str):
+        query = """
+MATCH(e:Engineer {username: $username})
+MATCH(p:PullRequest {pr_id: $pr_id})
+MERGE(e)-[:CREATED]->(p)
+"""
+
+        self.neo4j.execute_query(
+            query,
+            {
+                "pr_id": pr_id,
+                "username": username
+            }
+        )
