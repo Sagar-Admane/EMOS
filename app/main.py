@@ -46,7 +46,7 @@ def root():
 
     service = PullRequestIngestionService(github_service)
 
-    count = service.ingest_pull_requests(db, "sagar-admane/StockSync", 1, 50)
+    count = service.ingest_pull_requests(db, "sagar-admane/StockSync", 4, 1)
 
     return {
         "prs_ingested": count
