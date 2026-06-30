@@ -31,5 +31,5 @@ from app.models.file import File
 files = db.query(File).all()
 
 for file in files:
-    service.connect_repository_to_file(4, file.id)
+    service.connect_repository_to_file(1, file.id)
     

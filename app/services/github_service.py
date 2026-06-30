@@ -35,8 +35,10 @@ class GithubService:
     
     def get_file_content(self, repo_name: str, path: str):
         repo = self.client.get_repo(repo_name)
+        path1 = path.split(".")[-1]
 
-        if(path not in TEXT_EXTENSIONS):
+        if(path1 not in TEXT_EXTENSIONS):
+            print("Path error coming content None from here", path1)
             return None
         content = repo.get_contents(path)
 

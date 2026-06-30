@@ -24,6 +24,9 @@ class CodeFileIngestionService:
             try:
                 content = self.github_service.get_file_content(repo_name, file.path)
 
+                if content is None:
+                    content = ""
+            
                 CodeFileRepository.create(db, {
                     "file_id": file.id,
                     "language": file.extension,

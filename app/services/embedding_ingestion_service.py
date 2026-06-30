@@ -1,6 +1,7 @@
 from app.services.embedding_service import EmbeddingService
 from app.services.qdrant_service import QdrantService
 from app.models.code_chunk import CodeChunk
+from app.models.codeFile import CodeFile
 from sqlalchemy.orm import Session
 class EmbeddingIngestionService:
 
@@ -17,6 +18,8 @@ class EmbeddingIngestionService:
         for chunk in chunks:
             vector = self.embedding_service.embedd(chunk.chunk_text)
 
+            path = db.query(CodeFile).filter(CodeFile.id == chunk.code_file_id).first().language
+
             self.qdrant_service.upsert_chunk(
                 chunk_id=chunk.id,
                 vector=vector,
@@ -25,7 +28,7 @@ class EmbeddingIngestionService:
                     "code_file_id": chunk.code_file_id,
                     "start_line": chunk.start_line,
                     "end_line": chunk.end_line,
-                    "file_path": chunk
+                    "file_path": path
                 }
             )
 

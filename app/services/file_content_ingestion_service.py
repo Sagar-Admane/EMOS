@@ -19,7 +19,10 @@ class FileContentIngestionService:
             existing = FileContentRepository.get_by_file_id(db, file.id)
 
             if existing:
+                print("Existing hence continue")
                 continue
+
+            print("Path is: ", file.path)
 
             content = githubservice.get_file_content(repo_name, file.path)
 

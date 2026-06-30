@@ -16,7 +16,7 @@ class QdrantService:
     def create_collection(self):
 
         self.client.recreate_collection(
-            collection_name="code_chunks",
+            collection_name="test_code_chunks",
             vectors_config=VectorParams(
                 size=384,
                 distance=Distance.COSINE
@@ -25,7 +25,7 @@ class QdrantService:
 
     def upsert_chunk(self, chunk_id: int, vector: list, payload: dict):
         self.client.upsert(
-            collection_name="code_chunks",
+            collection_name="test_code_chunks",
             points = [
                 PointStruct(
                     id=chunk_id,
@@ -37,7 +37,7 @@ class QdrantService:
 
     def search(self, vector: list, limit=5):
         results = self.client.query_points(
-            collection_name="code_chunks",
+            collection_name="test_code_chunks",
             query=vector,
             limit=limit,
             with_vectors=True

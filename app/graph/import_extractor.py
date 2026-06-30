@@ -48,7 +48,7 @@ from app.db.session import SessionLocal
 def abc(db:Session):
     code_file = (
         db.query(CodeFile)
-        .filter(CodeFile.file_id == 3057)
+        .filter(CodeFile.file_id == 11)
         .first()
     )
 

@@ -38,16 +38,16 @@ def root():
     token = settings.github_token
     github_service = GithubService(token)
     commit_service = CommitIngestionService(github_service)
-    # count = commit_service.ingest_commits(db, "sagar-admane/StockSync", 4, 9)
+    count = commit_service.ingest_commits(db, "sagar-admane/StockSync", 1, 9)
     # service = RepositoryIngestion(github_service)
     # repo = service.ingest_repository(db, "sagar-admane/StockSync")
 
     # print(repo.id)
     # print(repo.full_name)
 
-    service = PullRequestIngestionService(github_service)
+    # service = PullRequestIngestionService(github_service)
 
-    count = service.ingest_pull_requests(db, "sagar-admane/StockSync", 4, 1)
+    # count = service.ingest_pull_requests(db, "sagar-admane/StockSync", 1, 1)
 
     return {
         "prs_ingested": count
@@ -58,7 +58,7 @@ def branch_ingest():
     token = settings.github_token
     github_service = GithubService(token)
     service = BranchIngestionService(github_service)
-    count = service.ingest_branches(db, "sagar-admane/StockSync", 4)
+    count = service.ingest_branches(db, "sagar-admane/StockSync", 1)
     return {
         "branches": count
     }
@@ -68,7 +68,7 @@ def contributor_ingest():
     token = settings.github_token
     github_service = GithubService(token)
     service = ContributorIngestionService(github_service)
-    count = service.contributor_ingestion(db, "sagar-admane/StockSync", 4)
+    count = service.contributor_ingestion(db, "sagar-admane/StockSync", 1)
     return count
 
 @app.get("/ingest-file")
@@ -76,7 +76,7 @@ def file_ingest():
     token = settings.github_token
     github_service = GithubService(token)
     service = FileIngestionService(github_service)
-    count = service.file_ingestion(db, "sagar-admane/StockSync", 4)
+    count = service.file_ingestion(db, "sagar-admane/StockSync", 1)
     return count
 
 @app.get("/ingest-commitFile")
@@ -84,7 +84,7 @@ def commit_file_ingest():
     token = settings.github_token
     github_service = GithubService(token)
     service = CommitFileIngestion(github_service)
-    relations = service.commit_file_ingestion(db, "sagar-admane/StockSync", 4)
+    relations = service.commit_file_ingestion(db, "sagar-admane/StockSync", 1)
     return relations
 
 

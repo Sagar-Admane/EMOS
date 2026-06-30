@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
+from typing import Optional
 
 class Settings(BaseSettings):
     
@@ -10,8 +11,8 @@ class Settings(BaseSettings):
     )
 
     database_url: str = Field(validation_alias="DATABASE_URL")
-    github_client: str = Field(validation_alias="GITHUB_CLIENT_ID")
-    github_secret: str = Field(validation_alias="GITHUB_CLIENT_SECRET")
+    github_client: Optional[str] = Field(validation_alias="GITHUB_CLIENT_ID")
+    github_secret: Optional[str] = Field(validation_alias="GITHUB_CLIENT_SECRET")
 
     github_token: str = Field(validation_alias="GITHUB_TOKEN")
 

@@ -20,4 +20,4 @@ from app.db.session import SessionLocal
 service = GraphFileIngestionService()
 db = SessionLocal()
 
-service.ingest_files(db, 4)
+service.ingest_files(db, 1)
