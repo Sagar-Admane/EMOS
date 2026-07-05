@@ -3,27 +3,27 @@ from .enums import *
 INTENT_RULES = {
     Intent.ARCHITECTURE: {
         "sources": [
-            DataSoruce.QDRANT,
-            DataSoruce.NEO4J,
+            DataSource.QDRANT,
+            DataSource.NEO4J,
         ],
         "skill": Skill.ARCHITECTURE,
         "strategy": RetrievalStrategy.HYBRID,
     },
     Intent.OWNERSHIP: {
         "sources": [
-            DataSoruce.POSTGRES,
-            DataSoruce.NEO4J,
+            DataSource.POSTGRES,
+            DataSource.NEO4J,
         ],
         "skill": Skill.OWNERSHIP,
         "strategy": RetrievalStrategy.GRAPH,
     },
     Intent.REVIEW_HISTORY: {
-        "sources": [DataSoruce.POSTGRES],
+        "sources": [DataSource.POSTGRES],
         "skill": Skill.REVIEWER,
         "strategy": RetrievalStrategy.SQL,
     },
     Intent.REPOSITORY_SUMMARY: {
-        "sources": [DataSoruce.QDRANT],
+        "sources": [DataSource.QDRANT],
         "skill": Skill.REPOSITORY_SUMMARY,
         "strategy": RetrievalStrategy.VECTOR,
     },

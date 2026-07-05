@@ -1,4 +1,4 @@
-from app.ai.router.enums import DataSoruce, Skill, Intent, RetrievalStrategy
+from app.ai.router.enums import DataSource, Skill, Intent, RetrievalStrategy
 
 from pydantic import BaseModel, Field
 from typing import Any
@@ -20,8 +20,8 @@ class RouteDecision(BaseModel):
     question: str
     intent: Intent
     confidence: float
-    entiteis: list[Entity] = Field(default_factory=list)
-    required_sources: list[DataSoruce]
+    entities: list[Entity] = Field(default_factory=list)
+    required_sources: list[DataSource]
     skill: Skill
     strategy: RetrievalStrategy
     filters: QueryFilters = Field(default_factory=QueryFilters)
@@ -29,4 +29,4 @@ class RouteDecision(BaseModel):
 
     @property
     def entities(self) -> list[Entity]:
-        return self.entiteis
+        return self.entities

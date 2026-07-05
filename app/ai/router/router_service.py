@@ -1,7 +1,7 @@
 from app.ai.router.classifier import IntentClassifier
 from app.ai.router.datasource_selector import DataSourceSelector
 from app.ai.router.entities import EntityExtractor
-from app.ai.router.enums import DataSoruce, Intent, RetrievalStrategy, Skill
+from app.ai.router.enums import DataSource, Intent, RetrievalStrategy, Skill
 from app.ai.router.schemas import QueryFilters, RouteDecision
 from app.ai.router.skill_selector import SkillSelector
 from app.ai.router.utils import infer_filters
@@ -34,7 +34,7 @@ class RouterService:
             question=question,
             intent=intent,
             confidence=self._confidence_for(intent),
-            entiteis=entities,
+            entities=entities,
             required_sources=required_sources,
             skill=skill,
             strategy=strategy,
@@ -42,7 +42,7 @@ class RouterService:
             reasoning=reasoning,
         )
 
-    def _select_strategy(self, intent: Intent, required_sources: list[DataSoruce]) -> RetrievalStrategy:
+    def _select_strategy(self, intent: Intent, required_sources: list[DataSource]) -> RetrievalStrategy:
         if intent in {Intent.ARCHITECTURE, Intent.DEPENDENCY, Intent.DEPLOYMENT}:
             return RetrievalStrategy.HYBRID if len(required_sources) > 1 else RetrievalStrategy.VECTOR
         if intent == Intent.OWNERSHIP:
@@ -54,7 +54,7 @@ class RouterService:
     def _confidence_for(self, intent: Intent) -> float:
         return 0.85 if intent != Intent.MIXED else 0.55
 
-    def _build_reasoning(self, intent: Intent, skill: Skill, sources: list[DataSoruce], strategy: RetrievalStrategy) -> str:
+    def _build_reasoning(self, intent: Intent, skill: Skill, sources: list[DataSource], strategy: RetrievalStrategy) -> str:
         return (
             f"Intent '{intent.value}' is routed to skill '{skill.value}' using sources "
             f"{', '.join(source.value for source in sources)} with strategy '{strategy.value}'."

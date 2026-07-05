@@ -15,7 +15,7 @@ class Intent(str, Enum):
     DECISION_RECALL = "decision_recall"
     MIXED = "mixed"
 
-class DataSoruce(str, Enum):
+class DataSource(str, Enum):
     POSTGRES = "postgres"
     NEO4J = "neo4j"
     QDRANT = "qdrant"

@@ -1,7 +1,7 @@
 from app.ai.router.classifier import IntentClassifier
 from app.ai.router.entities import EntityExtractor
 from app.ai.router.router_service import RouterService
-from app.ai.router.enums import Intent, Skill, DataSoruce
+from app.ai.router.enums import Intent, Skill, DataSource
 
 
 def test_intent_classifier_detects_review_and_ownership_questions():
@@ -25,5 +25,5 @@ def test_router_service_builds_a_complete_route_decision():
 
     assert decision.intent == Intent.OWNERSHIP
     assert decision.skill == Skill.OWNERSHIP
-    assert DataSoruce.POSTGRES in decision.required_sources
+    assert DataSource.POSTGRES in decision.required_sources
     assert decision.filters.repository == "demo"
