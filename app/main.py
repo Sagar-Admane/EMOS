@@ -24,6 +24,7 @@ from app.router.generate_embedding_router import router as generate_embedding_ro
 from app.router.semantic_search_router import router as sementic_search_router
 from app.router.pull_request_review_router import router as pull_req_rev_router
 from app.router.file_content_router import router as file_content_router
+from app.router.ai_router import router as ai_router
 
 app = FastAPI(
     title="EMOS",
@@ -99,6 +100,7 @@ app.include_router(generate_embedding_router)
 app.include_router(sementic_search_router)
 app.include_router(file_content_router)
 app.include_router(pull_req_rev_router)
+app.include_router(ai_router)
 
 @app.get("/qdrant/init")
 

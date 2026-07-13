@@ -26,7 +26,3 @@ class RouteDecision(BaseModel):
     strategy: RetrievalStrategy
     filters: QueryFilters = Field(default_factory=QueryFilters)
     reasoning: str
-
-    @property
-    def entities(self) -> list[Entity]:
-        return self.entities

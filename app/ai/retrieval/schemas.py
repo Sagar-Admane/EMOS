@@ -1,8 +1,13 @@
+from typing import Any
+
 from pydantic import BaseModel, Field
+
 from app.ai.router.enums import DataSource
 
+
 class RetrievalMetadata(BaseModel):
-    data: dict[str, any] = Field(default_factory=1)
+    data: dict[str, Any] = Field(default_factory=dict)
+
 
 class RetrievedDocument(BaseModel):
     source: DataSource
@@ -12,17 +17,20 @@ class RetrievedDocument(BaseModel):
     metadata: RetrievalMetadata = Field(default_factory=RetrievalMetadata)
     score: float | None = None
 
+
 class RetrievalStatistics(BaseModel):
     total_documents: int = 0
     sources_used: list[DataSource] = Field(default_factory=list)
-    retrieval_time_ms: float = 0
+    retrieval_time_ms: float = 0.0
+
 
 class RetrievalError(BaseModel):
     source: DataSource
     message: str
     retryable: bool = False
 
+
 class RetrievalResult(BaseModel):
-    documents: list[RetrievedDocument]
-    statistics: RetrievalStatistics
-    errors: list[RetrievalError]
+    documents: list[RetrievedDocument] = Field(default_factory=list)
+    statistics: RetrievalStatistics = Field(default_factory=RetrievalStatistics)
+    errors: list[RetrievalError] = Field(default_factory=list)
