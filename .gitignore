@@ -1,6 +1,168 @@
-.venv
-/app/__pycache__
-/app/*/__pycache__
+# ─────────────────────────────────────────────────────────────
+# EMOS — Root .gitignore  (Python / FastAPI backend)
+# ─────────────────────────────────────────────────────────────
+
+# ── Python Virtual Environments ──────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.env.bak
+
+# ── Python Bytecode & Cache ───────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# ── Python Package Build ──────────────────────────────────────
+*.egg
+*.egg-info/
+dist/
+build/
+wheels/
+*.whl
+*.tar.gz
+sdist/
+develop-eggs/
+.eggs/
+lib/
+lib64/
+parts/
+var/
+*.so
+
+# ── Type Checking ─────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.pyre/
+
+# ── Testing ───────────────────────────────────────────────────
+.pytest_cache/
+.tox/
+.nox/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.coveragerc
+nosetests.xml
+test-results/
+
+# ── Environment & Secrets ─────────────────────────────────────
+# NEVER commit secrets, API keys, or credentials
 .env
-alembic
-alembic.ini
+.env.local
+.env.development
+.env.staging
+.env.production
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+secrets.yaml
+secrets.yml
+
+# ── Alembic ───────────────────────────────────────────────────
+# Uncomment the lines below if you do NOT want to track migrations
+# alembic/versions/
+# alembic.ini
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+*.log.*
+logs/
+log/
+
+# ── Database ──────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+
+# ── Jupyter Notebooks ─────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── IDEs & Editors ────────────────────────────────────────────
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# JetBrains (PyCharm, IntelliJ, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ── OS Files ──────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+.directory
+
+# ── Docker ────────────────────────────────────────────────────
+# Keep docker-compose.yml but ignore override files with secrets
+docker-compose.override.yml
+docker-compose.*.yml
+!docker-compose.yml
+.dockerenv
+
+# ── Qdrant / Vector DB Local Data ─────────────────────────────
+qdrant_storage/
+qdrant_data/
+
+# ── Model Weights & Large Files ───────────────────────────────
+*.bin
+*.pt
+*.pth
+*.onnx
+*.h5
+*.pkl
+*.pickle
+*.joblib
+models/
+model_weights/
+
+# ── Misc ──────────────────────────────────────────────────────
+.cache/
+tmp/
+temp/
+.tmp/

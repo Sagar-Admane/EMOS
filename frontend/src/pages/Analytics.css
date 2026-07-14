@@ -1,0 +1,101 @@
+.analytics-page {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+.tab-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  font-size: 13px;
+  font-weight: 450;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color var(--t-base), border-color var(--t-base);
+  font-family: var(--font);
+  border-radius: 0;
+}
+
+.tab-btn:hover { color: var(--text-1); }
+
+.tab-btn.active {
+  color: var(--text-1);
+  font-weight: 500;
+  border-bottom-color: var(--accent);
+}
+
+/* ── Table ───────────────────────────────────────────────────── */
+.analytics-table { overflow: hidden; }
+
+.analytics-table-header {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.analytics-row {
+  grid-template-columns: 36px 1fr auto;
+}
+
+.analytics-rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-4);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.analytics-name {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.analytics-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ── Avatar ──────────────────────────────────────────────────── */
+.avatar-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .analytics-table-header { display: none; }
+  .analytics-row { grid-template-columns: 36px 1fr auto; }
+}

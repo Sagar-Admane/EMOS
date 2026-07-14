@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.services.github_service import GithubService
 from app.db.session import SessionLocal
@@ -29,6 +30,15 @@ from app.router.ai_router import router as ai_router
 app = FastAPI(
     title="EMOS",
     version="1.0"
+)
+
+# Allow the Vite dev server (and any origin in dev) to call the API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 db = SessionLocal()

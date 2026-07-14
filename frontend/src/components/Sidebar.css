@@ -1,0 +1,102 @@
+.sidebar {
+  width: var(--sidebar-w);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-subtle);
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Brand ──────────────────────────────────────────────────── */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-4);
+  height: var(--topbar-h);
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-2);
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.sidebar-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: 0.02em;
+}
+
+/* ── Nav ────────────────────────────────────────────────────── */
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-3) var(--s-2);
+  gap: 2px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px var(--s-3);
+  border-radius: var(--r-2);
+  font-size: 13px;
+  font-weight: 450;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: background var(--t-fast), color var(--t-fast);
+  border: 1px solid transparent;
+}
+
+.nav-link:hover {
+  background: var(--bg-hover);
+  color: var(--text-1);
+}
+
+.nav-link.active {
+  background: var(--bg);
+  color: var(--text-1);
+  font-weight: 500;
+  border-color: var(--border);
+  box-shadow: var(--shadow-1);
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.sidebar-footer {
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--border);
+}
+
+.repo-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 5px var(--s-3);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  width: fit-content;
+}
+
+.repo-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+}

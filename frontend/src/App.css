@@ -1,0 +1,10 @@
+/* App.css — layout helpers */
+
+/* Full-height container for the AI page — no padding, no scroll */
+.ai-layout {
+  flex: 1;          /* fill the layout-content flex column */
+  min-height: 0;    /* allow flex children to shrink below content size */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
