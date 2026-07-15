@@ -48,12 +48,13 @@ class TaskExecutor:
 
             logger.info("[Executor] Executing task %d: [%s] '%s'", task.id, task.type, task.description)
             try:
-                result_text = await self._execute_task(task, parent_route)
+                result_text, raw_res = await self._execute_task(task, parent_route)
                 memory.add_step(
                     task_id=task.id,
                     task_type=task.type,
                     description=task.description or "Querying data source",
-                    result=result_text
+                    result=result_text,
+                    raw_result=raw_res
                 )
             except Exception as exc:
                 logger.exception("[Executor] Error executing task %d: %s", task.id, exc)
@@ -61,14 +62,15 @@ class TaskExecutor:
                     task_id=task.id,
                     task_type=task.type,
                     description=task.description or "Querying data source",
-                    result=f"Failed to retrieve data: {str(exc)}"
+                    result=f"Failed to retrieve data: {str(exc)}",
+                    raw_result=None
                 )
 
         logger.info("[Executor] Finished executing all search tasks.")
         return memory
 
-    async def _execute_task(self, task: Task, parent_route: RouteDecision) -> str:
-        """Execute a single search task and return its formatted string findings."""
+    async def _execute_task(self, task: Task, parent_route: RouteDecision) -> tuple[str, Any]:
+        """Execute a single search task and return its formatted findings and raw retrieval result."""
         # 1. Map task type to DataSource and RetrievalStrategy
         if task.type == "search_graph":
             source = DataSource.NEO4J
@@ -100,7 +102,7 @@ class TaskExecutor:
         retrieval_result = await self._orchestrator.retrieve(route)
 
         if not retrieval_result.documents:
-            return "No documents or records found."
+            return "No documents or records found.", retrieval_result
 
         # 4. Build compressed context
         context_package = self._context_builder.build(
@@ -110,4 +112,4 @@ class TaskExecutor:
         )
 
         # 5. Format results as plain text
-        return context_package.as_text()
+        return context_package.as_text(), retrieval_result

@@ -16,13 +16,14 @@ class WorkingMemory(BaseModel):
     goal: str
     steps: list[dict[str, Any]] = Field(default_factory=list)
 
-    def add_step(self, task_id: int, task_type: str, description: str, result: str) -> None:
+    def add_step(self, task_id: int, task_type: str, description: str, result: str, raw_result: Any = None) -> None:
         """Record the findings of a completed task step."""
         self.steps.append({
             "task_id": task_id,
             "type": task_type,
             "description": description,
-            "result": result
+            "result": result,
+            "raw_result": raw_result
         })
 
     def as_text(self) -> str:
