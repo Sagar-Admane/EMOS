@@ -13,6 +13,7 @@ from app.ai.skills.ownership.skill import OwnershipSkill
 from app.ai.skills.repository_summary.skill import RepositorySummarySkill
 from app.ai.skills.dependency.skill import DependencySkill
 from app.ai.skills.deployment.skill import DeploymentSkill
+from app.ai.skills.code_search.skill import CodeSearchSkill
 from app.ai.router.enums import Skill
 
 
@@ -29,6 +30,7 @@ class SkillRegistry:
         Skill.REPOSITORY_SUMMARY: RepositorySummarySkill(),
         Skill.DEPENDENCY: DependencySkill(),
         Skill.DEPLOYMENT: DeploymentSkill(),
+        Skill.CODE_SEARCH: CodeSearchSkill(),
     }
 
     @classmethod
@@ -55,5 +57,6 @@ __all__ = [
     "RepositorySummarySkill",
     "DependencySkill",
     "DeploymentSkill",
+    "CodeSearchSkill",
     "SkillRegistry",
 ]

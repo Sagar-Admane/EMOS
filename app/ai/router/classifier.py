@@ -11,8 +11,12 @@ class IntentClassifier:
         if "who owns" in question:
             return Intent.OWNERSHIP
 
-        if "architecture" in question:
+        if "architecture" in question or "system design" in question:
             return Intent.ARCHITECTURE
+            
+        if any(kw in question for kw in ["where is", "written", "file", "implementation", "implemented", "database", "auth"]):
+            return Intent.CODE_SEARCH
+            
         return Intent.MIXED
     
     

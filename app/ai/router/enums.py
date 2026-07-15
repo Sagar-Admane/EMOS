@@ -23,6 +23,7 @@ class DataSource(str, Enum):
 class Skill(str, Enum):
     REPOSITORY_SUMMARY = "repository_summary"
     ARCHITECTURE = "architecture"
+    CODE_SEARCH = "code_search"
     OWNERSHIP = "ownership"
     REVIEWER = "reviewer"
     DEPENDENCY = "dependency"

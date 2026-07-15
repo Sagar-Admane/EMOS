@@ -9,6 +9,11 @@ INTENT_RULES = {
         "skill": Skill.ARCHITECTURE,
         "strategy": RetrievalStrategy.HYBRID,
     },
+    Intent.CODE_SEARCH: {
+        "sources": [DataSource.QDRANT],
+        "skill": Skill.CODE_SEARCH,
+        "strategy": RetrievalStrategy.VECTOR,
+    },
     Intent.OWNERSHIP: {
         "sources": [
             DataSource.POSTGRES,
