@@ -12,6 +12,7 @@ const SUGGESTIONS = [
 ];
 
 /* Individual message bubble */
+/* Individual message bubble */
 const Message = ({ role, text, metadata, isNew }) => {
   if (role === 'user') {
     return (
@@ -21,13 +22,61 @@ const Message = ({ role, text, metadata, isNew }) => {
     );
   }
 
+  // Simple inline Markdown formatter to avoid raw markdown tags in text output
+  const renderFormattedText = (rawText) => {
+    if (!rawText) return null;
+    const lines = rawText.split('\n');
+    return lines.map((line, idx) => {
+      // 1. Headers: e.g. "### Heading" or "## Heading" or "# Heading"
+      const headerMatch = line.match(/^(#{1,6})\s+(.*)$/);
+      if (headerMatch) {
+        const level = headerMatch[1].length;
+        const content = parseInlineTokens(headerMatch[2]);
+        const Tag = `h${level}`;
+        return <Tag key={idx} className={`md-h${level}`} style={{ margin: '8px 0 4px 0', fontWeight: 'bold' }}>{content}</Tag>;
+      }
+
+      // 2. Unordered lists: e.g. "- item" or "* item"
+      const listMatch = line.match(/^([*\-–])\s+(.*)$/);
+      if (listMatch) {
+        const content = parseInlineTokens(listMatch[2]);
+        return <li key={idx} className="md-li" style={{ marginLeft: '16px', listStyleType: 'disc' }}>{content}</li>;
+      }
+
+      // 3. Spacing
+      if (line.trim() === '') {
+        return <div key={idx} style={{ height: '8px' }} />;
+      }
+
+      // 4. Default paragraph
+      return <p key={idx} className="md-p" style={{ margin: '4px 0' }}>{parseInlineTokens(line)}</p>;
+    });
+  };
+
+  const parseInlineTokens = (lineText) => {
+    if (!lineText) return '';
+    // Match bold (**text**) or inline code (`code`)
+    const parts = lineText.split(/(\*\*.*?\*\*|`.*?`)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i}>{part.slice(2, -2)}</strong>;
+      }
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return <code key={i} style={{ background: 'var(--bg-muted)', padding: '2px 4px', borderRadius: '4px', fontFamily: 'monospace' }}>{part.slice(1, -1)}</code>;
+      }
+      return part;
+    });
+  };
+
   return (
     <div className={`msg msg-assistant${isNew ? ' animate-in' : ''}`}>
       <div className="ai-avatar" aria-hidden="true">
         <Sparkles size={13} strokeWidth={1.75} />
       </div>
       <div className="msg-body">
-        <p className="msg-text" style={{ whiteSpace: 'pre-wrap' }}>{text}</p>
+        <div className="msg-text" style={{ whiteSpace: 'pre-wrap' }}>
+          {renderFormattedText(text)}
+        </div>
         {metadata && (
           <div className="msg-meta">
             <span className="badge badge-neutral">{metadata.intent?.replace(/_/g, ' ')}</span>
