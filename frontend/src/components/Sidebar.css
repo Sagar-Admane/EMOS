@@ -69,11 +69,11 @@
 }
 
 .nav-link.active {
-  background: var(--bg);
+  background: var(--bg-muted);
   color: var(--text-1);
   font-weight: 500;
-  border-color: var(--border);
-  box-shadow: var(--shadow-1);
+  border-color: transparent;
+  box-shadow: none;
 }
 
 /* ── Footer ─────────────────────────────────────────────────── */

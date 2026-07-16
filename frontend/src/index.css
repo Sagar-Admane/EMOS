@@ -10,39 +10,39 @@
 :root {
   /* Backgrounds */
   --bg:        #ffffff;
-  --bg-subtle: #fafafa;
-  --bg-muted:  #f4f4f5;
-  --bg-hover:  #f0f0f1;
+  --bg-subtle: #ffffff;   /* Seamlessly blend layout panels */
+  --bg-muted:  #fafafa;   /* Monochrome secondary gray */
+  --bg-hover:  #f4f4f5;
 
   /* Borders */
-  --border:        #e4e4e7;
-  --border-strong: #d4d4d8;
+  --border:        #eaeaea;   /* Soft, thin minimalist borders */
+  --border-strong: #dcdcdc;
 
   /* Text */
-  --text-1:    #09090b;   /* headings, labels */
-  --text-2:    #3f3f46;   /* body */
-  --text-3:    #71717a;   /* secondary */
-  --text-4:    #a1a1aa;   /* muted / placeholders */
+  --text-1:    #111111;   /* Sharp solid black headers */
+  --text-2:    #333333;   /* Clean body gray */
+  --text-3:    #666666;   /* Secondary gray */
+  --text-4:    #a0a0a0;   /* Muted details */
 
-  /* Accent — one only */
-  --accent:         #18181b;
+  /* Accent — pure minimalist obsidian */
+  --accent:         #000000;
   --accent-fg:      #ffffff;
-  --accent-hover:   #27272a;
-  --accent-subtle:  #f4f4f5;
-  --accent-ring:    rgba(24, 24, 27, 0.12);
+  --accent-hover:   #1a1a1a;
+  --accent-subtle:  #fafafa;
+  --accent-ring:    rgba(0, 0, 0, 0.05);
 
   /* Status */
-  --success:    #16a34a;
-  --success-bg: #f0fdf4;
-  --success-border: #bbf7d0;
-  --warning:    #ca8a04;
-  --warning-bg: #fefce8;
-  --danger:     #dc2626;
-  --danger-bg:  #fef2f2;
-  --danger-border: #fecaca;
-  --info:       #2563eb;
-  --info-bg:    #eff6ff;
-  --info-border: #bfdbfe;
+  --success:    #000000;
+  --success-bg: #fafafa;
+  --success-border: #eaeaea;
+  --warning:    #666666;
+  --warning-bg: #fafafa;
+  --danger:     #000000;
+  --danger-bg:  #fafafa;
+  --danger-border: #eaeaea;
+  --info:       #000000;
+  --info-bg:    #fafafa;
+  --info-border: #eaeaea;
 
   /* Spacing — 4px base, 8px grid */
   --s-1:  4px;
@@ -56,18 +56,18 @@
   --s-12: 48px;
   --s-16: 64px;
 
-  /* Radius */
-  --r-1: 3px;
-  --r-2: 5px;
-  --r-3: 7px;
-  --r-4: 10px;
+  /* Radius — sharper, cleaner corners */
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 6px;
+  --r-4: 8px;
   --r-full: 9999px;
 
-  /* Shadows */
-  --shadow-1: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-2: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-3: 0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
-  --shadow-4: 0 8px 24px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  /* Shadows — flat minimalist layout */
+  --shadow-1: none;
+  --shadow-2: none;
+  --shadow-3: none;
+  --shadow-4: none;
 
   /* Typography */
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -79,9 +79,48 @@
   --content-max: 900px;
 
   /* Transitions */
-  --t-fast: 100ms ease;
-  --t-base: 150ms ease;
-  --t-slow: 250ms ease;
+  --t-fast: 80ms ease;
+  --t-base: 120ms ease;
+  --t-slow: 200ms ease;
+}
+
+/* ── Dark Mode Variables ───────────────────────────────────────── */
+body.dark-mode {
+  /* Backgrounds */
+  --bg:        #09090b;   /* Obsidian charcoal dark background */
+  --bg-subtle: #09090b;
+  --bg-muted:  #18181b;   /* Dark zinc panel bg */
+  --bg-hover:  #27272a;   /* Hover gray */
+
+  /* Borders */
+  --border:        #222225;   /* Very clean dark borders */
+  --border-strong: #2e2e33;
+
+  /* Text */
+  --text-1:    #f4f4f5;   /* Bright white headings */
+  --text-2:    #d4d4d8;   /* Soft gray body text */
+  --text-3:    #9f9fa9;   /* Muted secondary gray */
+  --text-4:    #52525b;   /* Dark placeholder text */
+
+  /* Accent — pure minimalist bright silver */
+  --accent:         #ffffff;
+  --accent-fg:      #09090b;
+  --accent-hover:   #eaeaea;
+  --accent-subtle:  #18181b;
+  --accent-ring:    rgba(255, 255, 255, 0.08);
+
+  /* Statuses (Minimalist dark monochrome) */
+  --success:    #f4f4f5;
+  --success-bg: #18181b;
+  --success-border: #222225;
+  --warning:    #9f9fa9;
+  --warning-bg: #18181b;
+  --danger:     #f4f4f5;
+  --danger-bg:  #18181b;
+  --danger-border: #222225;
+  --info:       #f4f4f5;
+  --info-bg:    #18181b;
+  --info-border: #222225;
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */

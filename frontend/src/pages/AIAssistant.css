@@ -27,6 +27,8 @@
   flex: 1;
   overflow: hidden;
   min-height: 0;
+  border: none !important;
+  background: transparent !important;
 }
 
 /* ── Message list ────────────────────────────────────────────── */
@@ -47,30 +49,32 @@
 }
 
 .msg-user .msg-text {
-  background: var(--accent);
-  color: var(--accent-fg);
-  border-radius: 14px 14px var(--r-1) 14px;
-  padding: var(--s-3) var(--s-4);
-  font-size: 14px;
-  line-height: 1.55;
+  background: var(--bg-muted);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+  padding: var(--s-2) var(--s-3);
+  font-size: 13.5px;
+  line-height: 1.5;
   max-width: 80%;
 }
 
 .msg-assistant .msg-body {
   display: flex;
   flex-direction: column;
-  gap: var(--s-3);
-  max-width: 90%;
+  gap: var(--s-2);
+  max-width: 100%;
+  flex: 1;
 }
 
 .msg-assistant .msg-text {
   font-size: 14px;
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--text-2);
-  padding: var(--s-3) var(--s-4);
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-radius: var(--r-1) 14px 14px 14px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
 }
 
 .msg-error {
