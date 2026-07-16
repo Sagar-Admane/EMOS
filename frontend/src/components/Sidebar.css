@@ -100,3 +100,35 @@
   background: var(--success);
   flex-shrink: 0;
 }
+
+.repo-select-container {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  width: 100%;
+}
+
+.repo-select {
+  flex: 1;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+  padding: 4px var(--s-2);
+  font-size: 11px;
+  font-family: var(--font);
+  font-weight: 500;
+  color: var(--text-2);
+  outline: none;
+  cursor: pointer;
+  max-width: 110px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: border-color var(--t-fast);
+}
+
+.repo-select:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+

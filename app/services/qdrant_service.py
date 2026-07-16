@@ -5,6 +5,10 @@ from qdrant_client.models import (
     PointStruct
 )
 
+DEFAULT_COLLECTION = "test_code_chunks"
+VECTOR_SIZE = 384
+
+
 class QdrantService:
 
     def __init__(self):
@@ -13,20 +17,37 @@ class QdrantService:
             port=6333
         )
 
-    def create_collection(self):
+    def collection_exists(self, collection_name: str) -> bool:
+        try:
+            existing = self.client.get_collections().collections
+            return any(c.name == collection_name for c in existing)
+        except Exception:
+            return False
 
-        self.client.recreate_collection(
-            collection_name="test_code_chunks",
+    def create_collection(self, collection_name: str = DEFAULT_COLLECTION):
+        if self.collection_exists(collection_name):
+            print(f"[QdrantService] Collection '{collection_name}' already exists, skipping.")
+            return
+
+        self.client.create_collection(
+            collection_name=collection_name,
             vectors_config=VectorParams(
-                size=384,
+                size=VECTOR_SIZE,
                 distance=Distance.COSINE
             )
         )
+        print(f"[QdrantService] Created collection '{collection_name}'.")
 
-    def upsert_chunk(self, chunk_id: int, vector: list, payload: dict):
+    def delete_collection(self, collection_name: str):
+        if self.collection_exists(collection_name):
+            self.client.delete_collection(collection_name)
+            print(f"[QdrantService] Deleted collection '{collection_name}'.")
+
+    def upsert_chunk(self, chunk_id: int, vector: list, payload: dict,
+                     collection_name: str = DEFAULT_COLLECTION):
         self.client.upsert(
-            collection_name="test_code_chunks",
-            points = [
+            collection_name=collection_name,
+            points=[
                 PointStruct(
                     id=chunk_id,
                     vector=vector,
@@ -35,12 +56,12 @@ class QdrantService:
             ]
         )
 
-    def search(self, vector: list, limit=5):
+    def search(self, vector: list, limit=5, collection_name: str = DEFAULT_COLLECTION):
         results = self.client.query_points(
-            collection_name="test_code_chunks",
+            collection_name=collection_name,
             query=vector,
             limit=limit,
             with_vectors=True
         ).points
-        
+
         return results

@@ -26,15 +26,4 @@ class GraphAPIIngestion:
 
             self.graph_repo.create_api_node(path=api["path"], method=api["method"])
             self.graph_repo.create_api_funtion_relation(api["path"], api["method"], file_id, file.path)
-
-from app.db.session import SessionLocal
-
-from app.models.file import File
-
-service = GraphAPIIngestion()
-db = SessionLocal()
-
-files = db.query(File).all()
-
-for file in files:
-    service.ingest_files(db, file.id)
+

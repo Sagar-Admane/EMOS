@@ -36,13 +36,4 @@ class FunctionGraphIngestionService:
             print("Exception",exc)
 
     
-from app.db.session import SessionLocal
-service = FunctionGraphIngestionService()
-db = SessionLocal()
-from app.models.file import File
 
-files = db.query(File).all()
-
-for file in files:
-    service.ingest_file(db, file_id=file.id)
-    

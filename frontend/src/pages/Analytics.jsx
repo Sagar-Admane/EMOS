@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { Users, Flame, Hash } from 'lucide-react';
 import './Analytics.css';
 
-const REPO_ID = 1;
-
 const TABS = [
   { key: 'contributors', label: 'Contributors', icon: Users  },
   { key: 'hotspots',     label: 'Hotspots',     icon: Flame  },
@@ -57,7 +55,7 @@ const HotspotRow = ({ rank, path, count }) => {
   );
 };
 
-export default function Analytics() {
+export default function Analytics({ activeRepoId }) {
   const [tab,          setTab]          = useState('contributors');
   const [contributors, setContributors] = useState([]);
   const [hotspots,     setHotspots]     = useState([]);
@@ -70,8 +68,8 @@ export default function Analytics() {
       setError(null);
       try {
         const [cRes, hRes] = await Promise.all([
-          fetch(`/api/repositories/${REPO_ID}/contributors/top`),
-          fetch(`/api/repositories/${REPO_ID}/files/hotspot`),
+          fetch(`/api/repositories/${activeRepoId}/contributors/top`),
+          fetch(`/api/repositories/${activeRepoId}/files/hotspot`),
         ]);
         if (cRes.ok) setContributors(await cRes.json());
         if (hRes.ok) setHotspots(await hRes.json());
@@ -81,7 +79,7 @@ export default function Analytics() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [activeRepoId]);
 
   const activeData = tab === 'contributors' ? contributors : hotspots;
 

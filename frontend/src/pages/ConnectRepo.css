@@ -1,0 +1,295 @@
+/* ── ConnectRepo Page ────────────────────────────────────────── */
+
+.connect-page {
+  min-height: 100%;
+  padding: var(--s-8) var(--s-6);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.connect-header {
+  margin-bottom: var(--s-8);
+}
+
+.connect-header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: var(--s-1);
+}
+
+.connect-header p {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+/* ── Connect Form ───────────────────────────────────────────── */
+.connect-form {
+  display: flex;
+  gap: var(--s-2);
+  margin-bottom: var(--s-8);
+}
+
+.connect-form .input {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+/* ── Repo List ──────────────────────────────────────────────── */
+.repo-list-section h2 {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--s-3);
+}
+
+.repo-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.repo-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3);
+  background: var(--bg-subtle);
+  transition: border-color var(--t-base), background var(--t-base);
+  gap: var(--s-4);
+}
+
+.repo-card:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.repo-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.repo-card-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.repo-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+
+.repo-card-right {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-shrink: 0;
+}
+
+/* ── Status Badge ───────────────────────────────────────────── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.status-badge.ready {
+  color: var(--text-1);
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+}
+
+.status-badge.indexing {
+  color: var(--text-2);
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+}
+
+.status-badge.failed {
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+}
+
+.status-badge.pending {
+  color: var(--text-4);
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+}
+
+/* ── Pulsing dot ────────────────────────────────────────────── */
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-badge.ready    .status-dot { background: var(--text-1); }
+.status-badge.failed   .status-dot { background: var(--danger); }
+.status-badge.pending  .status-dot { background: var(--text-4); }
+
+.status-badge.indexing .status-dot {
+  background: var(--text-2);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* ── Indexing overlay (full-screen animated waiting screen) ─── */
+.indexing-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  gap: var(--s-5);
+  text-align: center;
+  padding: var(--s-8);
+}
+
+.indexing-logo {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--text-1);
+  opacity: 0;
+  animation: fade-in 0.6s ease forwards;
+}
+
+.indexing-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border);
+  border-top-color: var(--text-1);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite, fade-in 0.6s ease forwards 0.15s;
+  opacity: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+  to { opacity: 1; }
+}
+
+.indexing-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-1);
+  opacity: 0;
+  animation: slide-up 0.6s ease forwards 0.3s;
+}
+
+.indexing-subtitle {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+  line-height: 1.7;
+  max-width: 380px;
+  opacity: 0;
+  animation: slide-up 0.6s ease forwards 0.45s;
+}
+
+.indexing-phases {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+  opacity: 0;
+  animation: slide-up 0.6s ease forwards 0.6s;
+}
+
+.indexing-phase-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+
+.indexing-phase-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  flex-shrink: 0;
+}
+
+.indexing-phase-item.active .indexing-phase-dot {
+  background: var(--text-1);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+.indexing-phase-item.active {
+  color: var(--text-2);
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.indexing-dismiss {
+  margin-top: var(--s-4);
+  font-size: 0.75rem;
+  color: var(--text-4);
+  opacity: 0;
+  animation: fade-in 0.6s ease forwards 1.2s;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: var(--s-10) 0;
+  color: var(--text-4);
+  font-size: 0.8125rem;
+}
+
+.empty-state svg {
+  margin-bottom: var(--s-4);
+  opacity: 0.3;
+}
+
+/* error banner */
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--danger-border);
+  border-radius: var(--r-3);
+  background: var(--danger-bg);
+  font-size: 0.8125rem;
+  color: var(--text-2);
+  margin-bottom: var(--s-4);
+}

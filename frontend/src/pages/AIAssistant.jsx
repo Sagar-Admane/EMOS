@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Sparkles, RotateCcw } from 'lucide-react';
 import './AIAssistant.css';
 
-const REPO_ID = 1;
 
 const SUGGESTIONS = [
   'Who are the top contributors to this repository?',
@@ -107,7 +106,7 @@ const INITIAL = [
   { id: 0, role: 'assistant', text: 'Ask me anything about this repository — architecture, reviewers, ownership, hotspots, or recent changes.', isNew: false },
 ];
 
-export default function AIAssistant() {
+export default function AIAssistant({ activeRepoId }) {
   const [messages, setMessages] = useState(INITIAL);
   const [input,    setInput]    = useState('');
   const [busy,     setBusy]     = useState(false);
@@ -135,7 +134,7 @@ export default function AIAssistant() {
       const res = await fetch('/api/ai/ask', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ question: text, repo_id: REPO_ID }),
+        body:    JSON.stringify({ question: text, repo_id: activeRepoId }),
       });
 
       if (!res.ok) throw new Error(`Server error ${res.status}`);

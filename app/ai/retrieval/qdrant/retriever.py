@@ -70,8 +70,15 @@ class QdrantRetriever(BaseRetriever):
         )
 
     def _fetch_sync(self, route: RouteDecision) -> list[RetrievedDocument]:
+        repo_id = None
+        if route.filters and route.filters.repository:
+            try:
+                repo_id = int(route.filters.repository)
+            except ValueError:
+                pass
+
         vector = embed_text(route.question)
-        results = semantic_search(vector, limit=6)
+        results = semantic_search(vector, limit=6, repo_id=repo_id)
         docs: list[RetrievedDocument] = []
 
         for item in results:

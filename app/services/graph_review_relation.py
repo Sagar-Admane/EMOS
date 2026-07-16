@@ -18,14 +18,3 @@ class GraphReviewRelation:
             self.graph_repo.create_engineer_nodes(github_user_id, user)
             self.graph_repo.create_engineer_pr_reviews_relation(pr_review.pull_request_id, user)
 
-from app.db.session import SessionLocal
-
-from app.models.pull_request import PullRequest
-
-service = GraphReviewRelation()
-db = SessionLocal()
-
-prs = db.query(PullRequest).all()
-
-for pr in prs:
-    service.create_relation(db, pr.id)

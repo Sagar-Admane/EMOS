@@ -26,14 +26,4 @@ class CallGraphIngestionService:
 
             for callee in callees:
                 self.graph_repository.create_function_call_relation(caller_name=caller, callee_name=callee, file_id=file_id)
-
-from app.db.session import SessionLocal
-
-from app.models.file import File
-
-service = CallGraphIngestionService()
-db = SessionLocal()
-files = db.query(File).all()
-for file in files:
-    service.ingest_file(db, file.id)
-    
+

@@ -11,3 +11,4 @@ from app.models.code_chunk import CodeChunk
 from app.models.file_contents import FileContent
 from app.models.pull_request_reviews import PullRequestReview
 from app.models.deployments import Deployment
+from app.models.connected_repo import ConnectedRepo

@@ -15,9 +15,4 @@ class GraphFileIngestionService:
         for file in files:
             self.graph_repo.create_file_node(file.id, file.path, file.extension)
 
-
-from app.db.session import SessionLocal
-service = GraphFileIngestionService()
-db = SessionLocal()
-
-service.ingest_files(db, 1)
+

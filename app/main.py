@@ -27,6 +27,7 @@ from app.router.pull_request_review_router import router as pull_req_rev_router
 from app.router.file_content_router import router as file_content_router
 from app.router.ai_router import router as ai_router
 from app.prediction.router import router as prediction_router
+from app.router.github_connect_router import router as github_connect_router
 
 app = FastAPI(
     title="EMOS",
@@ -113,6 +114,7 @@ app.include_router(file_content_router)
 app.include_router(pull_req_rev_router)
 app.include_router(ai_router)
 app.include_router(prediction_router)
+app.include_router(github_connect_router)
 
 @app.get("/qdrant/init")
 

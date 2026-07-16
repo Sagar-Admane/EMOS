@@ -14,9 +14,4 @@ class GraphRepoIngestion:
         for repo in repos:
             self.graph_repo.create_repository_node(repo.id, repo.full_name)
 
-
-from app.db.session import SessionLocal
-service = GraphRepoIngestion()
-db = SessionLocal()
-
-service.ingest_repos(db)
+

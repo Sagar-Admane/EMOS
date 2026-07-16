@@ -27,6 +27,7 @@ def get_qdrant_service() -> QdrantService:
 def semantic_search(
     vector: list[float],
     limit: int = 5,
+    repo_id: int | None = None,
 ) -> list[dict[str, Any]]:
     """
     Perform a vector similarity search in Qdrant and enrich
@@ -36,10 +37,12 @@ def semantic_search(
         id, score, text, path, start_line, end_line
     """
     service = get_qdrant_service()
+    collection_name = f"repo_{repo_id}" if repo_id is not None else "test_code_chunks"
+    
     try:
-        raw_points = service.search(vector, limit=limit)
+        raw_points = service.search(vector, limit=limit, collection_name=collection_name)
     except Exception as exc:
-        logger.warning("Qdrant search failed: %s", exc)
+        logger.warning("Qdrant search failed for collection '%s': %s", collection_name, exc)
         return []
 
     raw_points = sorted(raw_points, key=lambda p: p.score, reverse=True)
@@ -55,7 +58,6 @@ def semantic_search(
             if row is None:
                 continue
             # get_chunk_with_file returns a SQLAlchemy Row: (CodeChunk, path)
-            # Access the labeled 'path' column directly
             file_path = row.path if hasattr(row, "path") else (row[1] if len(row) > 1 else "unknown")
             enriched.append(
                 {

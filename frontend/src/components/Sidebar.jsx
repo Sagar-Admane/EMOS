@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutGrid, BarChart2, Sparkles, Sun, Moon } from 'lucide-react';
+import { LayoutGrid, BarChart2, Sparkles, Sun, Moon, GitBranch } from 'lucide-react';
 import './Sidebar.css';
 
 const NAV = [
   { to: '/',          icon: LayoutGrid, label: 'Overview' },
   { to: '/analytics', icon: BarChart2,  label: 'Analytics' },
+  { to: '/connect',   icon: GitBranch,  label: 'Connect'   },
   { to: '/ai',        icon: Sparkles,   label: 'Ask AI'    },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ activeRepoId, onSelectRepo, repos }) => {
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved === 'dark';
@@ -48,17 +49,31 @@ const Sidebar = () => {
       </nav>
 
       <div className="sidebar-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--s-2)' }}>
-        <div className="repo-pill" style={{ margin: 0 }}>
+        <div className="repo-select-container">
           <span className="repo-dot" />
-          <span className="text-xs" style={{ color: 'var(--text-3)' }}>repo_id&nbsp;=&nbsp;</span>
-          <span className="text-xs" style={{ color: 'var(--text-1)', fontWeight: 500 }}>1</span>
+          <select 
+            className="repo-select"
+            value={activeRepoId || ''} 
+            onChange={(e) => onSelectRepo(Number(e.target.value))}
+            aria-label="Select Repository"
+          >
+            {repos.length === 0 ? (
+              <option value="1">StockSync</option>
+            ) : (
+              repos.map(r => (
+                <option key={r.repo_id} value={r.repo_id}>
+                  {r.full_name.split('/').pop()}
+                </option>
+              ))
+            )}
+          </select>
         </div>
         <button 
           className="btn btn-ghost btn-icon"
           onClick={() => setDarkMode(!darkMode)}
           title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
           aria-label="Toggle Theme"
-          style={{ width: '28px', height: '28px', padding: 0 }}
+          style={{ width: '28px', height: '28px', padding: 0, flexShrink: 0 }}
         >
           {darkMode ? <Sun size={14} /> : <Moon size={14} />}
         </button>

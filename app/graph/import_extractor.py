@@ -40,25 +40,4 @@ class ImportExtractor:
 
         return imports
     
-
-from sqlalchemy.orm import Session
-from app.models.codeFile import CodeFile
-from app.db.session import SessionLocal
-
-def abc(db:Session):
-    code_file = (
-        db.query(CodeFile)
-        .filter(CodeFile.file_id == 11)
-        .first()
-    )
-
-    imports = ImportExtractor.extract_imports(
-        code_file.content, "js"
-    )
-
-    result = [item.replace("../","") for item in imports] 
-
-    print(result)
-
-db = SessionLocal()
-abc(db)
+

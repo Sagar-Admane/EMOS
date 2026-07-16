@@ -21,15 +21,4 @@ class GraphService:
     def connect_repository_to_file(self, repo_id, file_id):
         self.graph_repository.create_repository_file_relationship(repo_id, file_id)
 
-
-from app.db.session import SessionLocal
-service = GraphService()
-db = SessionLocal()
-
-from app.models.file import File
-
-files = db.query(File).all()
-
-for file in files:
-    service.connect_repository_to_file(1, file.id)
-    
+

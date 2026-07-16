@@ -21,15 +21,4 @@ class GraphPrEngineerRelation:
 
             self.graph_repo.create_engineer_pr_relation(pr.id, pr.author)
 
-
-from app.db.session import SessionLocal
-
-from app.models.repository import Repository
-
-service = GraphPrEngineerRelation()
-db = SessionLocal()
-
-files = db.query(Repository).all()
-
-for repo in files:
-    service.ingest_files(db)
+

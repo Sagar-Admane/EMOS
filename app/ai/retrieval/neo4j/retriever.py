@@ -3,7 +3,7 @@ Neo4j retriever for the AI Intelligence Layer.
 
 Implements BaseRetriever. Uses AIGraphRepository to run
 read-only Cypher queries and maps results into
-normalized RetrievedDocument objects.
+scoped, repository-specific RetrievedDocument objects.
 """
 import asyncio
 import logging
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 class Neo4jRetriever(BaseRetriever):
     """
     Retrieves engineering information from Neo4j using
-    read-only graph traversals based on the RouteDecision.
+    read-only repository-scoped graph traversals based on the RouteDecision.
     """
 
     def __init__(self) -> None:
@@ -80,6 +80,13 @@ class Neo4jRetriever(BaseRetriever):
         intent = route.intent
         docs: list[RetrievedDocument] = []
 
+        repo_id = 1
+        if route.filters and route.filters.repository:
+            try:
+                repo_id = int(route.filters.repository)
+            except ValueError:
+                pass
+
         if intent in {Intent.REVIEW_HISTORY, Intent.PR_ANALYSIS}:
             pr_number = self._extract_pr_number(route.question)
             if pr_number is not None:
@@ -90,24 +97,24 @@ class Neo4jRetriever(BaseRetriever):
         if intent in {Intent.OWNERSHIP, Intent.ARCHITECTURE, Intent.REPOSITORY_SUMMARY}:
             path_fragment = self._extract_path_fragment(route)
             if path_fragment:
-                docs.extend(self._fetch_ownership_for_path(path_fragment))
+                docs.extend(self._fetch_ownership_for_path(path_fragment, repo_id))
             else:
-                docs.extend(self._fetch_all_engineers())
+                docs.extend(self._fetch_all_engineers(repo_id))
 
         if intent in {Intent.DEPENDENCY, Intent.ARCHITECTURE}:
             path_fragment = self._extract_path_fragment(route)
-            docs.extend(self._fetch_dependencies(route.question, path_fragment))
-            docs.extend(self._fetch_services())
-            docs.extend(self._fetch_api_endpoints())
+            docs.extend(self._fetch_dependencies(route.question, path_fragment, repo_id))
+            docs.extend(self._fetch_services(repo_id))
+            docs.extend(self._fetch_api_endpoints(repo_id))
 
         if intent == Intent.REPOSITORY_SUMMARY:
-            docs.extend(self._fetch_services())
-            docs.extend(self._fetch_api_endpoints())
-            docs.extend(self._fetch_database_usages())
+            docs.extend(self._fetch_services(repo_id))
+            docs.extend(self._fetch_api_endpoints(repo_id))
+            docs.extend(self._fetch_database_usages(repo_id))
 
         if intent == Intent.MIXED:
-            docs.extend(self._fetch_all_engineers())
-            docs.extend(self._fetch_services())
+            docs.extend(self._fetch_all_engineers(repo_id))
+            docs.extend(self._fetch_services(repo_id))
 
         return docs
 
@@ -156,9 +163,9 @@ class Neo4jRetriever(BaseRetriever):
             )
         ]
 
-    def _fetch_ownership_for_path(self, path_fragment: str) -> list[RetrievedDocument]:
-        owners = self._graph.find_file_owners(path_fragment)
-        modifiers = self._graph.find_active_engineers_on_file(path_fragment)
+    def _fetch_ownership_for_path(self, path_fragment: str, repo_id: int) -> list[RetrievedDocument]:
+        owners = self._graph.find_file_owners(path_fragment, repo_id)
+        modifiers = self._graph.find_active_engineers_on_file(path_fragment, repo_id)
         docs = []
         if owners:
             lines = [f"- {o.get('owner')} owns {o.get('file_path')}" for o in owners]
@@ -167,7 +174,7 @@ class Neo4jRetriever(BaseRetriever):
                 RetrievedDocument(
                     source=self.source,
                     document_type="file_ownership",
-                    title=f"Graph: Ownership of '{path_fragment}'",
+                    title=f"Graph: Scoped Ownership of '{path_fragment}'",
                     content=content,
                     metadata=RetrievalMetadata(data={"owners": owners}),
                     score=0.95,
@@ -183,7 +190,7 @@ class Neo4jRetriever(BaseRetriever):
                 RetrievedDocument(
                     source=self.source,
                     document_type="file_activity",
-                    title=f"Graph: Active Engineers on '{path_fragment}'",
+                    title=f"Graph: Scoped Active Engineers on '{path_fragment}'",
                     content=content,
                     metadata=RetrievalMetadata(data={"modifiers": modifiers}),
                     score=0.9,
@@ -191,8 +198,8 @@ class Neo4jRetriever(BaseRetriever):
             )
         return docs
 
-    def _fetch_all_engineers(self) -> list[RetrievedDocument]:
-        engineers = self._graph.find_all_engineers()
+    def _fetch_all_engineers(self, repo_id: int) -> list[RetrievedDocument]:
+        engineers = self._graph.find_all_engineers(repo_id)
         if not engineers:
             return []
         lines = [f"- {e.get('username')}" for e in engineers]
@@ -201,7 +208,7 @@ class Neo4jRetriever(BaseRetriever):
             RetrievedDocument(
                 source=self.source,
                 document_type="engineers",
-                title="Graph: All Engineers",
+                title="Graph: All Scoped Engineers",
                 content=content,
                 metadata=RetrievalMetadata(data={"engineers": engineers}),
                 score=0.6,
@@ -212,18 +219,19 @@ class Neo4jRetriever(BaseRetriever):
         self,
         question: str,
         path_fragment: str | None,
+        repo_id: int,
     ) -> list[RetrievedDocument]:
         docs = []
         if path_fragment:
-            imports = self._graph.find_file_imports(path_fragment)
-            rev_imports = self._graph.find_reverse_imports(path_fragment)
+            imports = self._graph.find_file_imports(path_fragment, repo_id)
+            rev_imports = self._graph.find_reverse_imports(path_fragment, repo_id)
             if imports:
                 lines = [f"- {r.get('source')} → {r.get('dependency')}" for r in imports]
                 docs.append(
                     RetrievedDocument(
                         source=self.source,
                         document_type="imports",
-                        title=f"Graph: Imports from '{path_fragment}'",
+                        title=f"Graph: Scoped Imports from '{path_fragment}'",
                         content="File Imports:\n" + "\n".join(lines),
                         metadata=RetrievalMetadata(data={"imports": imports}),
                         score=0.9,
@@ -235,7 +243,7 @@ class Neo4jRetriever(BaseRetriever):
                     RetrievedDocument(
                         source=self.source,
                         document_type="reverse_imports",
-                        title=f"Graph: What imports '{path_fragment}'",
+                        title=f"Graph: Scoped reverse dependencies for '{path_fragment}'",
                         content="Reverse Dependencies:\n" + "\n".join(lines),
                         metadata=RetrievalMetadata(data={"reverse_imports": rev_imports}),
                         score=0.85,
@@ -249,7 +257,7 @@ class Neo4jRetriever(BaseRetriever):
             re.IGNORECASE,
         )
         db_name = db_match.group(1) if db_match else ""
-        db_usages = self._graph.find_database_usages(db_name)
+        db_usages = self._graph.find_database_usages(repo_id, db_name)
         if db_usages:
             label = f"'{db_name}'" if db_name else "all databases"
             lines = [f"- {r.get('file_path')} uses {r.get('database')}" for r in db_usages]
@@ -257,7 +265,7 @@ class Neo4jRetriever(BaseRetriever):
                 RetrievedDocument(
                     source=self.source,
                     document_type="database_usage",
-                    title=f"Graph: Database Usage ({label})",
+                    title=f"Graph: Scoped Database Usage ({label})",
                     content=f"Database Dependencies ({label}):\n" + "\n".join(lines),
                     metadata=RetrievalMetadata(data={"usages": db_usages}),
                     score=0.88,
@@ -265,8 +273,8 @@ class Neo4jRetriever(BaseRetriever):
             )
         return docs
 
-    def _fetch_services(self) -> list[RetrievedDocument]:
-        services = self._graph.find_all_services()
+    def _fetch_services(self, repo_id: int) -> list[RetrievedDocument]:
+        services = self._graph.find_all_services(repo_id)
         if not services:
             return []
         lines = [
@@ -277,15 +285,15 @@ class Neo4jRetriever(BaseRetriever):
             RetrievedDocument(
                 source=self.source,
                 document_type="services",
-                title="Graph: Services Architecture",
+                title="Graph: Scoped Services Architecture",
                 content="Services:\n" + "\n".join(lines),
                 metadata=RetrievalMetadata(data={"services": services}),
                 score=0.8,
             )
         ]
 
-    def _fetch_api_endpoints(self) -> list[RetrievedDocument]:
-        endpoints = self._graph.find_api_endpoints()
+    def _fetch_api_endpoints(self, repo_id: int) -> list[RetrievedDocument]:
+        endpoints = self._graph.find_api_endpoints(repo_id)
         if not endpoints:
             return []
         lines = [
@@ -296,15 +304,15 @@ class Neo4jRetriever(BaseRetriever):
             RetrievedDocument(
                 source=self.source,
                 document_type="api_endpoints",
-                title="Graph: API Endpoints",
+                title="Graph: Scoped API Endpoints",
                 content="API Endpoints:\n" + "\n".join(lines),
                 metadata=RetrievalMetadata(data={"endpoints": endpoints}),
                 score=0.75,
             )
         ]
 
-    def _fetch_database_usages(self) -> list[RetrievedDocument]:
-        usages = self._graph.find_database_usages()
+    def _fetch_database_usages(self, repo_id: int) -> list[RetrievedDocument]:
+        usages = self._graph.find_database_usages(repo_id)
         if not usages:
             return []
         lines = [f"- {u.get('file_path')} uses {u.get('database')}" for u in usages]
@@ -312,7 +320,7 @@ class Neo4jRetriever(BaseRetriever):
             RetrievedDocument(
                 source=self.source,
                 document_type="database_usage",
-                title="Graph: All Database Usages",
+                title="Graph: Scoped Database Usages",
                 content="Database Usages:\n" + "\n".join(lines),
                 metadata=RetrievalMetadata(data={"usages": usages}),
                 score=0.7,

@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { GitBranch, Users, GitPullRequest, GitCommit, ExternalLink } from 'lucide-react';
 import './Dashboard.css';
 
-const REPO_ID = 1;
-
 /* Thin stat cell — number + label only */
 const StatCell = ({ icon: Icon, value, label }) => (
   <div className="dash-stat">
@@ -25,15 +23,17 @@ const SkeletonRow = () => (
   </div>
 );
 
-export default function Dashboard() {
+export default function Dashboard({ activeRepoId }) {
   const [summary, setSummary]   = useState(null);
   const [loading, setLoading]   = useState(true);
   const [error,   setError]     = useState(null);
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const r = await fetch(`/api/repositories/${REPO_ID}/summary`);
+        const r = await fetch(`/api/repositories/${activeRepoId}/summary`);
         if (!r.ok) throw new Error(`${r.status}`);
         setSummary(await r.json());
       } catch (e) {
@@ -42,7 +42,7 @@ export default function Dashboard() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [activeRepoId]);
 
   return (
     <div className="dash animate-in">
@@ -56,7 +56,9 @@ export default function Dashboard() {
               ? 'Loading repository…'
               : error
               ? 'Could not reach backend'
-              : (summary?.full_name ?? `Repository ${REPO_ID}`)}
+              : summary?.owner && summary?.repository_name
+              ? `${summary.owner}/${summary.repository_name}`
+              : (summary?.repository_name ?? `Repository ${activeRepoId}`)}
           </p>
         </div>
         {summary?.html_url && (
@@ -80,7 +82,7 @@ export default function Dashboard() {
         <div className="dash-stat-divider" />
         <StatCell icon={GitPullRequest} value={loading ? null : summary?.total_prs}           label="Pull Requests" />
         <div className="dash-stat-divider" />
-        <StatCell icon={GitBranch}      value={loading ? null : (summary?.active_branches ?? 1)} label="Branches" />
+        <StatCell icon={GitBranch}      value={loading ? null : (summary?.total_branches ?? 1)} label="Branches" />
       </section>
 
       {/* Lower grid */}
@@ -130,7 +132,9 @@ export default function Dashboard() {
                 <div className="detail-row">
                   <dt className="text-xs">Full name</dt>
                   <dd className="text-xs" style={{ color: 'var(--text-2)', fontWeight: 500 }}>
-                    {summary?.full_name ?? '—'}
+                    {summary?.owner && summary?.repository_name
+                      ? `${summary.owner}/${summary.repository_name}`
+                      : (summary?.repository_name ?? '—')}
                   </dd>
                 </div>
                 <div className="detail-row">

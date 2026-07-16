@@ -26,15 +26,4 @@ class GraphServiceIngestionService:
             return
         self.graph_repo.create_service_node(service_name)
         self.graph_repo.create_service_file_relation(service_name, file_id)
-
-from app.db.session import SessionLocal
-
-from app.models.file import File
-
-service = GraphServiceIngestionService()
-db = SessionLocal()
-
-files = db.query(File).all()
-
-for file in files:
-    service.ingest_services(db, file.id)
+

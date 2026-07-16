@@ -25,15 +25,4 @@ class GraphDatabaseIngestionService:
 
         self.graphRepository.create_file_database_relation(file_id, database)
 
-from app.db.session import SessionLocal
-
-from app.models.file import File
-
-service = GraphDatabaseIngestionService()
-db = SessionLocal()
-
-files = db.query(File).all()
-
-for file in files:
-    service.ingest_files(db, file.id)
 
