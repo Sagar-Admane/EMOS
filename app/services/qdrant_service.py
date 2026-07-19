@@ -19,7 +19,7 @@ class QdrantService:
 
         if qdrant_host:
             self.client = QdrantClient(
-                host=qdrant_host,
+                url=qdrant_host,
                 api_key=qdrant_api
             )
         else:
