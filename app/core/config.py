@@ -22,4 +22,7 @@ class Settings(BaseSettings):
     neo4j_username: str = Field(validation_alias="NEO4J_USERNAME")
     neo4j_password: str = Field(validation_alias="NEO4J_PASSWORD")
 
+    qdrant_host: str = Field(validation_alias="QDRANT_HOST")
+    qdrant_api: str = Field(validate_alias="QDRANT_API_KEY")
+
 settings = Settings()

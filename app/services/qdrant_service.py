@@ -4,6 +4,7 @@ from qdrant_client.models import (
     Distance,
     PointStruct
 )
+from app.core.config import settings
 
 DEFAULT_COLLECTION = "test_code_chunks"
 VECTOR_SIZE = 384
@@ -12,10 +13,21 @@ VECTOR_SIZE = 384
 class QdrantService:
 
     def __init__(self):
-        self.client = QdrantClient(
-            host="localhost",
-            port=6333
-        )
+
+        qdrant_host = settings.qdrant_host
+        qdrant_api = settings.qdrant_api
+
+        if qdrant_host:
+            self.client = QdrantClient(
+                host=qdrant_host,
+                api_key=qdrant_api
+            )
+        else:
+            self.client = QdrantClient(
+                host="localhost",
+                port=6333
+            )
+
 
     def collection_exists(self, collection_name: str) -> bool:
         try:
