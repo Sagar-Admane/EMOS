@@ -7,7 +7,7 @@ from qdrant_client.models import (
 from app.core.config import settings
 
 DEFAULT_COLLECTION = "test_code_chunks"
-VECTOR_SIZE = 384
+VECTOR_SIZE = 768
 
 
 class QdrantService:
