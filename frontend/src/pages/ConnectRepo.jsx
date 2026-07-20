@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GitFork, Trash2, RefreshCw, AlertCircle, Database } from 'lucide-react';
 import './ConnectRepo.css';
-
-const API = 'http://localhost:8000';
+import { getApiUrl } from '../utils/api';
 
 const PHASES = [
   'Fetching repository metadata from GitHub',
@@ -124,7 +123,7 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
 
     pollingRef.current = setInterval(async () => {
       try {
-        const res = await fetch(`${API}/github/repos/${indexingRepo.repo_id}/status`);
+        const res = await fetch(getApiUrl(`/api/github/repos/${indexingRepo.repo_id}/status`));
         if (!res.ok) return;
         const data = await res.json();
 
@@ -159,7 +158,7 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API}/github/connect`, {
+      const res = await fetch(getApiUrl('/api/github/connect'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ repo_full_name: slug }),
@@ -213,7 +212,7 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
   // ── Disconnect a repo ───────────────────────────────────────
   async function handleDelete(repoId) {
     try {
-      await fetch(`${API}/github/repos/${repoId}`, { method: 'DELETE' });
+      await fetch(getApiUrl(`/api/github/repos/${repoId}`), { method: 'DELETE' });
       setRepos(prev => prev.filter(r => r.repo_id !== repoId));
     } catch {
       setError('Failed to disconnect repository.');

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Sparkles, RotateCcw } from 'lucide-react';
+import { getApiUrl } from '../utils/api';
 import './AIAssistant.css';
 
 
@@ -131,7 +132,7 @@ export default function AIAssistant({ activeRepoId }) {
     busyRef.current = true;
 
     try {
-      const res = await fetch('/api/ai/ask', {
+      const res = await fetch(getApiUrl('/api/ai/ask'), {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ question: text, repo_id: activeRepoId }),

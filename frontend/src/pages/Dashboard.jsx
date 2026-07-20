@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GitBranch, Users, GitPullRequest, GitCommit, ExternalLink } from 'lucide-react';
+import { getApiUrl } from '../utils/api';
 import './Dashboard.css';
 
 /* Thin stat cell — number + label only */
@@ -33,7 +34,7 @@ export default function Dashboard({ activeRepoId }) {
       setLoading(true);
       setError(null);
       try {
-        const r = await fetch(`/api/repositories/${activeRepoId}/summary`);
+        const r = await fetch(getApiUrl(`/api/repositories/${activeRepoId}/summary`));
         if (!r.ok) throw new Error(`${r.status}`);
         setSummary(await r.json());
       } catch (e) {

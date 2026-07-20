@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, Flame, Hash } from 'lucide-react';
+import { getApiUrl } from '../utils/api';
 import './Analytics.css';
 
 const TABS = [
@@ -68,8 +69,8 @@ export default function Analytics({ activeRepoId }) {
       setError(null);
       try {
         const [cRes, hRes] = await Promise.all([
-          fetch(`/api/repositories/${activeRepoId}/contributors/top`),
-          fetch(`/api/repositories/${activeRepoId}/files/hotspot`),
+          fetch(getApiUrl(`/api/repositories/${activeRepoId}/contributors/top`)),
+          fetch(getApiUrl(`/api/repositories/${activeRepoId}/files/hotspot`)),
         ]);
         if (cRes.ok) setContributors(await cRes.json());
         if (hRes.ok) setHotspots(await hRes.json());

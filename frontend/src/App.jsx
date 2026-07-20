@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
 import AIAssistant from './pages/AIAssistant';
 import ConnectRepo from './pages/ConnectRepo';
+import { getApiUrl } from './utils/api';
 import './App.css';
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
 
   const fetchRepos = useCallback(async () => {
     try {
-      const res = await fetch('/api/github/repos');
+      const res = await fetch(getApiUrl('/api/github/repos'));
       if (res.ok) {
         const data = await res.json();
         setRepos(data);
