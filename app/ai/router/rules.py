@@ -28,9 +28,12 @@ INTENT_RULES = {
         "strategy": RetrievalStrategy.SQL,
     },
     Intent.REPOSITORY_SUMMARY: {
-        "sources": [DataSource.QDRANT],
+        "sources": [
+            DataSource.POSTGRES,
+            DataSource.QDRANT,
+        ],
         "skill": Skill.REPOSITORY_SUMMARY,
-        "strategy": RetrievalStrategy.VECTOR,
+        "strategy": RetrievalStrategy.HYBRID,
     },
 }
 
