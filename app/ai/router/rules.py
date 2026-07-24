@@ -35,6 +35,14 @@ INTENT_RULES = {
         "skill": Skill.REPOSITORY_SUMMARY,
         "strategy": RetrievalStrategy.HYBRID,
     },
+    Intent.MIXED: {
+        "sources": [
+            DataSource.POSTGRES,
+            DataSource.QDRANT,
+        ],
+        "skill": Skill.REPOSITORY_SUMMARY,
+        "strategy": RetrievalStrategy.HYBRID,
+    },
 }
 
 INTENT_RULEA = INTENT_RULES

@@ -109,6 +109,7 @@ class PostgresRetriever(BaseRetriever):
             docs.extend(self._fetch_repo_info(db, repo_id))
             docs.extend(self._fetch_commits(db, repo_id))
             docs.extend(self._fetch_contributors(db, repo_id))
+            docs.extend(self._fetch_files(db, repo_id))
 
         return docs
 
@@ -298,19 +299,29 @@ class PostgresRetriever(BaseRetriever):
     ) -> list[RetrievedDocument]:
         if repo_id is None:
             return []
-        files = pg_queries.files_for_repo(db, repo_id, limit=40)
+        files = pg_queries.files_for_repo(db, repo_id, limit=200)
         if not files:
             return []
-        lines = [f"- {f['path']} ({f.get('extension', '')})" for f in files]
-        content = "Repository Files:\n" + "\n".join(lines)
+
+        # Calculate extension distribution
+        ext_counts = {}
+        for f in files:
+            ext = f.get('extension', '') or 'no extension'
+            ext_counts[ext] = ext_counts.get(ext, 0) + 1
+
+        sorted_exts = sorted(ext_counts.items(), key=lambda x: x[1], reverse=True)
+        ext_summary = ", ".join(f"{ext}: {count} files" for ext, count in sorted_exts)
+
+        lines = [f"- {f['path']} ({f.get('extension', '')})" for f in files[:50]]
+        content = f"Language / Extension Summary: {ext_summary}\n\nRepository File List (Sample):\n" + "\n".join(lines)
         return [
             RetrievedDocument(
                 source=self.source,
                 document_type="file_list",
-                title="Repository File Tree",
+                title="Repository File Tree and Language Breakdown",
                 content=content,
-                metadata=RetrievalMetadata(data={"files": files}),
-                score=0.6,
+                metadata=RetrievalMetadata(data={"files": files, "extension_counts": ext_counts}),
+                score=0.9,
             )
         ]
 

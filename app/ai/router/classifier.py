@@ -14,7 +14,7 @@ class IntentClassifier:
         if "architecture" in question or "system design" in question:
             return Intent.ARCHITECTURE
             
-        if any(kw in question for kw in ["contributor", "contributors", "author", "authors", "commit", "commits", "pr", "pull request", "summary", "overview"]):
+        if any(kw in question for kw in ["contributor", "contributors", "author", "authors", "commit", "commits", "pr", "pull request", "summary", "summarize", "overview", "explain", "describe", "repo", "repository", "project", "language", "languages", "tech", "technology", "technologies", "stack", "extension", "extensions", "most used"]):
             return Intent.REPOSITORY_SUMMARY
 
         if any(kw in question for kw in ["where is", "written", "file", "implementation", "implemented", "database", "auth"]):

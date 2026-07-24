@@ -15,6 +15,6 @@ class SkillSelector:
                 return Skill.REVIEWER
             if intent == Intent.REPOSITORY_SUMMARY:
                 return Skill.REPOSITORY_SUMMARY
-            return Skill.ARCHITECTURE
+            return Skill.REPOSITORY_SUMMARY
 
         return Skill(skill)
