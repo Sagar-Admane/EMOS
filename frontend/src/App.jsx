@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
 import AIAssistant from './pages/AIAssistant';
 import ConnectRepo from './pages/ConnectRepo';
+import Background3D from './components/3d/Background3D';
+import StoryScroll from './components/story/StoryScroll';
 import { getApiUrl } from './utils/api';
 import './App.css';
 
@@ -14,6 +16,9 @@ function App() {
     return saved ? Number(saved) : 1;
   });
   const [repos, setRepos] = useState([]);
+  const [showStory, setShowStory] = useState(() => {
+    return sessionStorage.getItem('emos_story_seen') !== 'true';
+  });
 
   const fetchRepos = useCallback(async () => {
     try {
@@ -21,9 +26,7 @@ function App() {
       if (res.ok) {
         const data = await res.json();
         setRepos(data);
-        
-        // If activeRepoId is default (1) and we have other repos connected,
-        // or if activeRepoId is not in the list, auto-select the first one available
+
         if (data.length > 0) {
           const exists = data.some(r => r.repo_id === activeRepoId);
           if (!exists) {
@@ -49,18 +52,26 @@ function App() {
   };
 
   const handleNewRepoConnected = async (repoId) => {
-    // Update local state first so select option renders immediately
     handleSelectRepo(repoId);
     await fetchRepos();
   };
 
   return (
     <Router>
-      <div className="layout">
-        <Sidebar activeRepoId={activeRepoId} onSelectRepo={handleSelectRepo} repos={repos} />
+      {showStory && (
+        <StoryScroll onEnterApp={() => setShowStory(false)} />
+      )}
+
+      <div className="layout" style={{ position: 'relative', zIndex: 2 }}>
+        <Background3D />
+        <Sidebar 
+          activeRepoId={activeRepoId} 
+          onSelectRepo={handleSelectRepo} 
+          repos={repos}
+          onOpenStory={() => setShowStory(true)}
+        />
         <div className="layout-content">
           <Routes>
-            {/* Standard scrollable pages */}
             <Route path="/" element={
               <div className="page-scroll">
                 <Dashboard activeRepoId={activeRepoId} />
@@ -76,7 +87,6 @@ function App() {
                 <ConnectRepo onRepoConnected={handleNewRepoConnected} repos={repos} setRepos={setRepos} />
               </div>
             } />
-            {/* AI page gets its own full-height container — no outer scroll */}
             <Route path="/ai" element={
               <div className="ai-layout">
                 <AIAssistant activeRepoId={activeRepoId} />

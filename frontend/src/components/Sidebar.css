@@ -6,6 +6,7 @@
   background: var(--bg-subtle);
   border-right: 1px solid var(--border);
   flex-shrink: 0;
+  z-index: 10;
 }
 
 /* ── Brand ──────────────────────────────────────────────────── */
@@ -23,7 +24,7 @@
   height: 22px;
   border-radius: var(--r-2);
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-fg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,7 +98,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--success);
+  background: var(--text-1);
   flex-shrink: 0;
 }
 
@@ -132,3 +133,29 @@
   background: var(--bg-hover);
 }
 
+/* ── Mobile Responsive Sidebar ──────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0 var(--s-2);
+  }
+  .sidebar-brand {
+    border-bottom: none;
+    padding: var(--s-2) var(--s-3);
+  }
+  .sidebar-nav {
+    flex-direction: row;
+    padding: 0;
+    overflow-x: auto;
+  }
+  .sidebar-footer {
+    border-top: none;
+    padding: var(--s-2);
+  }
+}

@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Users, Flame, Hash } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Users, Flame, Hash, Sparkles } from 'lucide-react';
+import { motion } from 'motion/react';
+import { animate, stagger } from 'animejs';
 import { getApiUrl } from '../utils/api';
+import AnalyticsVisualizer3D from '../components/3d/AnalyticsVisualizer3D';
 import './Analytics.css';
 
 const TABS = [
-  { key: 'contributors', label: 'Contributors', icon: Users  },
-  { key: 'hotspots',     label: 'Hotspots',     icon: Flame  },
+  { key: 'contributors', label: 'Contributors', icon: Users },
+  { key: 'hotspots',     label: 'Hotspots',     icon: Flame },
 ];
 
-/* Skeleton */
 const SkeletonRows = ({ n = 6 }) => (
   <>
     {Array.from({ length: n }).map((_, i) => (
@@ -20,9 +22,8 @@ const SkeletonRows = ({ n = 6 }) => (
   </>
 );
 
-/* Contributor row */
 const ContributorRow = ({ rank, username, contributions }) => (
-  <div className="table-row analytics-row">
+  <div className="table-row analytics-row anime-stagger-item">
     <div className="analytics-rank text-xs">{rank}</div>
     <div className="analytics-name">
       <span className="avatar-circle">{username?.[0]?.toUpperCase() ?? '?'}</span>
@@ -38,12 +39,11 @@ const ContributorRow = ({ rank, username, contributions }) => (
   </div>
 );
 
-/* Hotspot row */
 const HotspotRow = ({ rank, path, count }) => {
   const filename = path?.split('/').pop() ?? path;
   const dir      = path?.includes('/') ? path.split('/').slice(0, -1).join('/') : '';
   return (
-    <div className="table-row analytics-row">
+    <div className="table-row analytics-row anime-stagger-item">
       <div className="analytics-rank text-xs">{rank}</div>
       <div className="analytics-name" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
         <span style={{ fontWeight: 500, color: 'var(--text-1)', fontSize: 13 }}>{filename}</span>
@@ -62,6 +62,7 @@ export default function Analytics({ activeRepoId }) {
   const [hotspots,     setHotspots]     = useState([]);
   const [loading,      setLoading]      = useState(true);
   const [error,        setError]        = useState(null);
+  const tableRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -82,18 +83,48 @@ export default function Analytics({ activeRepoId }) {
     })();
   }, [activeRepoId]);
 
+  // Anime.js Staggered Row Animation
+  useEffect(() => {
+    if (!loading && tableRef.current) {
+      const items = tableRef.current.querySelectorAll('.anime-stagger-item');
+      if (items.length > 0) {
+        animate(items, {
+          translateY: [12, 0],
+          opacity: [0, 1],
+          delay: stagger(40),
+          ease: 'outQuad',
+          duration: 400
+        });
+      }
+    }
+  }, [loading, tab, contributors, hotspots]);
+
   const activeData = tab === 'contributors' ? contributors : hotspots;
 
   return (
-    <div className="analytics-page animate-in">
-
+    <motion.div 
+      className="analytics-page"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+    >
       {/* Header */}
       <div className="page-header">
         <div className="page-header-left">
-          <h1 className="text-display">Analytics</h1>
-          <p className="text-sm">Code ownership, activity, and file risk</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <h1 className="text-display">Analytics</h1>
+            <span className="badge badge-neutral" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <Sparkles size={11} /> Monochrome WebGL
+            </span>
+          </div>
+          <p className="text-sm">Code ownership, activity, and file risk metrics</p>
         </div>
       </div>
+
+      {/* 3D Visualizer Canvas */}
+      {!loading && !error && activeData.length > 0 && (
+        <AnalyticsVisualizer3D data={activeData} type={tab} />
+      )}
 
       {/* Tab strip */}
       <div className="tab-strip">
@@ -110,8 +141,7 @@ export default function Analytics({ activeRepoId }) {
       </div>
 
       {/* Table */}
-      <div className="card analytics-table">
-        {/* Table header */}
+      <div className="card analytics-table" ref={tableRef}>
         <div className="analytics-table-header">
           <div className="analytics-rank">
             <span className="text-xs" style={{ color: 'var(--text-4)' }}>
@@ -130,7 +160,7 @@ export default function Analytics({ activeRepoId }) {
           <SkeletonRows />
         ) : error ? (
           <div className="empty-state">
-            <p className="text-sm" style={{ color: 'var(--danger)' }}>Failed to load — {error}</p>
+            <p className="text-sm" style={{ color: 'var(--text-3)' }}>Failed to load — {error}</p>
           </div>
         ) : activeData.length === 0 ? (
           <div className="empty-state">
@@ -160,7 +190,6 @@ export default function Analytics({ activeRepoId }) {
           ))
         )}
       </div>
-
-    </div>
+    </motion.div>
   );
 }

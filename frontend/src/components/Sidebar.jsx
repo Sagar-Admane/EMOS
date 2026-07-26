@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutGrid, BarChart2, Sparkles, Sun, Moon, GitBranch } from 'lucide-react';
+import { LayoutGrid, BarChart2, Sparkles, Sun, Moon, GitBranch, Compass } from 'lucide-react';
 import './Sidebar.css';
 
 const NAV = [
@@ -10,7 +10,7 @@ const NAV = [
   { to: '/ai',        icon: Sparkles,   label: 'Ask AI'    },
 ];
 
-const Sidebar = ({ activeRepoId, onSelectRepo, repos }) => {
+const Sidebar = ({ activeRepoId, onSelectRepo, repos, onOpenStory }) => {
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved === 'dark';
@@ -46,6 +46,17 @@ const Sidebar = ({ activeRepoId, onSelectRepo, repos }) => {
             <span>{label}</span>
           </NavLink>
         ))}
+        {onOpenStory && (
+          <button 
+            className="nav-link" 
+            onClick={onOpenStory} 
+            style={{ background: 'transparent', width: '100%', cursor: 'pointer', textAlign: 'left' }}
+            title="Replay 3D Intro Story"
+          >
+            <Compass size={15} strokeWidth={1.75} />
+            <span>3D Story</span>
+          </button>
+        )}
       </nav>
 
       <div className="sidebar-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--s-2)' }}>

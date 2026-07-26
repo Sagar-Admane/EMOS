@@ -1,7 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { GitFork, Trash2, RefreshCw, AlertCircle, Database } from 'lucide-react';
-import './ConnectRepo.css';
+import { useState, useEffect, useRef } from 'react';
+import { GitFork, Trash2, RefreshCw, AlertCircle, Database, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import confetti from 'canvas-confetti';
 import { getApiUrl } from '../utils/api';
+import RepoGraph3D from '../components/3d/RepoGraph3D';
+import './ConnectRepo.css';
 
 const PHASES = [
   'Fetching repository metadata from GitHub',
@@ -12,7 +15,6 @@ const PHASES = [
   'Building Neo4j knowledge graph',
 ];
 
-/* ── Animated Indexing Overlay ─────────────────────────────── */
 function IndexingOverlay({ repoName, onDismiss }) {
   const [phaseIdx, setPhaseIdx] = useState(0);
 
@@ -24,14 +26,18 @@ function IndexingOverlay({ repoName, onDismiss }) {
   }, []);
 
   return (
-    <div className="indexing-overlay">
-      <div className="indexing-logo">EMOS</div>
+    <motion.div 
+      className="indexing-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <div className="indexing-logo">EMOS MONOCHROME</div>
       <div className="indexing-spinner" />
       <div className="indexing-title">Indexing {repoName}</div>
       <div className="indexing-subtitle">
-        We're analysing your repository and building the knowledge graph.
+        We're analysing your repository and building the 3D knowledge graph.
         This can take a minute or two depending on the repository size.
-        Please don't close this tab.
       </div>
 
       <div className="indexing-phases">
@@ -52,11 +58,10 @@ function IndexingOverlay({ repoName, onDismiss }) {
       >
         Continue in background →
       </button>
-    </div>
+    </motion.div>
   );
 }
 
-/* ── Status Badge ────────────────────────────────────────────── */
 function StatusBadge({ status }) {
   const labels = {
     ready: 'Ready',
@@ -72,10 +77,15 @@ function StatusBadge({ status }) {
   );
 }
 
-/* ── Repo Card ───────────────────────────────────────────────── */
 function RepoCard({ repo, onDelete }) {
   return (
-    <div className="repo-card">
+    <motion.div 
+      className="repo-card"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      whileHover={{ y: -2 }}
+    >
       <div className="repo-card-left">
         <span className="repo-card-name">{repo.full_name}</span>
         <div className="repo-card-meta">
@@ -102,19 +112,18 @@ function RepoCard({ repo, onDelete }) {
           <Trash2 size={13} />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
+export default function ConnectRepo({ onRepoConnected, repos = [], setRepos }) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [indexingRepo, setIndexingRepo] = useState(null);   // { repo_id, full_name }
+  const [indexingRepo, setIndexingRepo] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const pollingRef = useRef(null);
 
-  // ── Poll for status while indexing ─────────────────────────
   useEffect(() => {
     if (!indexingRepo) {
       clearInterval(pollingRef.current);
@@ -127,7 +136,6 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
         if (!res.ok) return;
         const data = await res.json();
 
-        // Update the list item live
         setRepos(prev =>
           prev.map(r =>
             r.repo_id === data.repo_id
@@ -137,6 +145,14 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
         );
 
         if (data.status === 'ready' || data.status === 'failed') {
+          if (data.status === 'ready') {
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ['#ffffff', '#a1a1aa', '#52525b', '#000000']
+            });
+          }
           clearInterval(pollingRef.current);
           setIndexingRepo(null);
           setShowOverlay(false);
@@ -147,9 +163,8 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
     }, 3000);
 
     return () => clearInterval(pollingRef.current);
-  }, [indexingRepo]);
+  }, [indexingRepo, setRepos]);
 
-  // ── Connect a repo ──────────────────────────────────────────
   async function handleConnect(e) {
     e.preventDefault();
     setError('');
@@ -176,7 +191,6 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
         onRepoConnected(data.repo_id);
       }
 
-      // Add to list immediately
       setRepos(prev => {
         const exists = prev.find(r => r.repo_id === data.repo_id);
         if (exists) {
@@ -198,7 +212,6 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
         ];
       });
 
-      // Show animated overlay
       setIndexingRepo({ repo_id: data.repo_id, full_name: data.full_name });
       setShowOverlay(true);
 
@@ -209,7 +222,6 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
     }
   }
 
-  // ── Disconnect a repo ───────────────────────────────────────
   async function handleDelete(repoId) {
     try {
       await fetch(getApiUrl(`/api/github/repos/${repoId}`), { method: 'DELETE' });
@@ -221,22 +233,35 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
 
   return (
     <>
-      {/* Full-screen indexing overlay */}
-      {showOverlay && indexingRepo && (
-        <IndexingOverlay
-          repoName={indexingRepo.full_name}
-          onDismiss={() => setShowOverlay(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showOverlay && indexingRepo && (
+          <IndexingOverlay
+            repoName={indexingRepo.full_name}
+            onDismiss={() => setShowOverlay(false)}
+          />
+        )}
+      </AnimatePresence>
 
-      <div className="connect-page">
+      <motion.div 
+        className="connect-page"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+      >
         <div className="connect-header">
-          <h1>Connect Repository</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <h1>Connect Repository</h1>
+            <span className="badge badge-neutral" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <Sparkles size={11} /> Monochrome Graph Ingestion
+            </span>
+          </div>
           <p>
-            Connect a public GitHub repository. EMOS will automatically index
-            the codebase into Qdrant vectors and build a Neo4j knowledge graph.
+            Connect a GitHub repository. EMOS will index the codebase into Qdrant vectors and build a Neo4j 3D knowledge graph.
           </p>
         </div>
+
+        {/* 3D Knowledge Graph Constellation */}
+        <RepoGraph3D repos={repos} />
 
         {/* Error banner */}
         {error && (
@@ -284,17 +309,19 @@ export default function ConnectRepo({ onRepoConnected, repos, setRepos }) {
             </div>
           ) : (
             <div className="repo-list">
-              {repos.map(repo => (
-                <RepoCard
-                  key={repo.repo_id}
-                  repo={repo}
-                  onDelete={handleDelete}
-                />
-              ))}
+              <AnimatePresence>
+                {repos.map(repo => (
+                  <RepoCard
+                    key={repo.repo_id}
+                    repo={repo}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

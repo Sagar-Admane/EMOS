@@ -109,11 +109,11 @@ const INITIAL = [
 
 export default function AIAssistant({ activeRepoId }) {
   const [messages, setMessages] = useState(INITIAL);
-  const [input,    setInput]    = useState('');
-  const [busy,     setBusy]     = useState(false);
-  const bottomRef  = useRef(null);
-  const inputRef   = useRef(null);
-  const busyRef    = useRef(false);
+  const [input, setInput] = useState('');
+  const [busy, setBusy] = useState(false);
+  const bottomRef = useRef(null);
+  const inputRef = useRef(null);
+  const busyRef = useRef(false);
 
   // Keep busyRef in sync so send() always sees the latest value without
   // needing to be recreated on every busy change.
@@ -133,30 +133,30 @@ export default function AIAssistant({ activeRepoId }) {
 
     try {
       const res = await fetch(getApiUrl('/api/ai/ask'), {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ question: text, repo_id: activeRepoId }),
+        body: JSON.stringify({ question: text, repo_id: activeRepoId }),
       });
 
       if (!res.ok) throw new Error(`Server error ${res.status}`);
       const data = await res.json();
 
       setMessages(prev => [...prev, {
-        id:       Date.now(),
-        role:     'assistant',
-        text:     data.answer,
-        isNew:    true,
+        id: Date.now(),
+        role: 'assistant',
+        text: data.answer,
+        isNew: true,
         metadata: {
           intent: data.intent,
-          skill:  data.skill_used,
-          time:   data.execution_time_ms,
+          skill: data.skill_used,
+          time: data.execution_time_ms,
         },
       }]);
     } catch (err) {
       setMessages(prev => [...prev, {
-        id:    Date.now(),
-        role:  'error',
-        text:  `Something went wrong — ${err.message}`,
+        id: Date.now(),
+        role: 'error',
+        text: `Something went wrong — ${err.message}`,
         isNew: true,
       }]);
     } finally {
